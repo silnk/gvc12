@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Card Generator - 12 Cards (3x4 Grid)</title>
+    <title>Professional Contact Card Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <style>
@@ -11,163 +11,224 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 20px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
+            min-height: 100vh;
+            padding: 20px;
         }
         
         .container {
+            max-width: 1200px;
+            margin: 0 auto;
             background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #2c3e50, #4a6583);
+            color: white;
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
+            text-align: center;
         }
         
         h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.2rem;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
         }
         
-        .input-section {
-            border: 3px dashed #3498db;
-            border-radius: 12px;
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 0;
+        }
+        
+        .form-section {
+            flex: 1;
+            min-width: 400px;
             padding: 30px;
-            margin-bottom: 30px;
-            background-color: #f8fafc;
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
         }
         
-        .single-input-form {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
+        .preview-section {
+            flex: 1.5;
+            min-width: 500px;
+            padding: 30px;
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         .form-group label {
             display: block;
-            font-weight: bold;
+            font-weight: 600;
             margin-bottom: 8px;
             color: #2c3e50;
+            font-size: 1rem;
         }
         
         .form-group input, .form-group textarea {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #bdc3c7;
-            border-radius: 6px;
+            padding: 14px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
             font-size: 16px;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
+            background: white;
         }
         
         .form-group input:focus, .form-group textarea:focus {
             border-color: #3498db;
             outline: none;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
         }
         
         .form-group textarea {
             resize: vertical;
-            min-height: 80px;
+            min-height: 100px;
         }
         
         .checkbox-group {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .checkbox-group input {
             width: auto;
-            margin-right: 10px;
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: 500;
         }
         
         .logo-upload {
             border: 2px dashed #bdc3c7;
-            border-radius: 6px;
-            padding: 15px;
+            border-radius: 10px;
+            padding: 20px;
             text-align: center;
-            margin-bottom: 20px;
-            background-color: #f8f9fa;
+            margin-bottom: 25px;
+            background: white;
+            transition: all 0.3s;
+        }
+        
+        .logo-upload:hover {
+            border-color: #3498db;
         }
         
         .logo-preview {
-            max-width: 100px;
-            max-height: 50px;
-            margin: 10px auto;
+            max-width: 120px;
+            max-height: 60px;
+            margin: 15px auto;
             display: none;
         }
         
         .logo-preview img {
             max-width: 100%;
             max-height: 100%;
+            border-radius: 5px;
         }
         
-        .apply-btn {
-            background: linear-gradient(to right, #3498db, #2980b9);
-            color: white;
-            padding: 14px 28px;
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 16px 24px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
             font-weight: 600;
-            width: 100%;
-            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        .apply-btn:hover {
+        .btn-primary {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
+        }
+        
+        .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1);
         }
         
-        .preview-section {
-            display: block;
-            margin-bottom: 30px;
+        .btn-secondary {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1);
+        }
+        
+        .btn-reset {
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+            color: white;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
+        }
+        
+        .btn-reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1);
         }
         
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 columns */
-            grid-template-rows: repeat(4, 1fr); /* 4 rows */
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(4, 1fr);
             gap: 0;
             margin: 20px 0;
             background: white;
             padding: 0;
-            border: 2px solid #2c3e50;
-            justify-items: center;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
         
         .card-cell {
-            width: 9.9cm; /* 99mm */
-            height: 5.25cm; /* 52.5mm */
-            border: 1px solid #bdc3c7;
+            width: 99mm;
+            height: 52.5mm;
+            border: 1px solid #e9ecef;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             position: relative;
             background-color: white;
-            padding: 8px;
+            padding: 10px;
+            transition: all 0.3s;
+        }
+        
+        .card-cell:hover {
+            background-color: #f8f9fa;
         }
         
         .card-preview {
@@ -182,20 +243,22 @@
         .card-header {
             display: flex;
             align-items: center;
-            margin-bottom: 5px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #eee;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e9ecef;
         }
         
         .card-logo {
-            width: 30px;
-            height: 30px;
-            margin-right: 8px;
+            width: 35px;
+            height: 35px;
+            margin-right: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f8f9fa;
-            border: 1px solid #ddd;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
         }
         
         .card-logo img {
@@ -209,14 +272,15 @@
         
         .card-name {
             font-weight: bold;
-            font-size: 12px;
-            margin-bottom: 2px;
+            font-size: 13px;
+            margin-bottom: 3px;
             color: #2c3e50;
         }
         
         .card-company {
-            font-size: 9px;
+            font-size: 10px;
             color: #7f8c8d;
+            font-weight: 600;
         }
         
         .card-designation {
@@ -240,13 +304,15 @@
         }
         
         .card-field {
-            margin-bottom: 4px;
+            margin-bottom: 5px;
             word-break: break-word;
+            line-height: 1.3;
         }
         
         .card-label {
             font-weight: bold;
             color: #7f8c8d;
+            font-size: 9px;
         }
         
         .card-qr {
@@ -262,8 +328,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f8f9fa;
-            border: 1px solid #ddd;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
         }
         
         .qr-code img {
@@ -279,50 +347,7 @@
             color: white;
             padding: 2px 6px;
             border-radius: 3px;
-            font-size: 10px;
-        }
-        
-        .controls {
-            text-align: center;
-            margin: 30px 0;
-        }
-        
-        .generate-btn {
-            background: linear-gradient(to right, #2ecc71, #27ae60);
-            color: white;
-            padding: 16px 32px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: 600;
-            margin: 10px;
-            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
-            transition: all 0.3s ease;
-        }
-        
-        .generate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1);
-        }
-        
-        .reset-btn {
-            background: linear-gradient(to right, #e67e22, #d35400);
-            color: white;
-            padding: 16px 32px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: 600;
-            margin: 10px;
-            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
-            transition: all 0.3s ease;
-        }
-        
-        .reset-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1);
+            font-size: 9px;
         }
         
         .status {
@@ -330,203 +355,145 @@
             margin: 20px 0;
             font-weight: bold;
             color: #2c3e50;
-            padding: 12px;
-            border-radius: 8px;
-            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #e8f4fc;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         
-        .size-info {
-            text-align: center;
-            margin: 15px 0;
-            color: #2c3e50;
-            font-size: 16px;
-            font-weight: 600;
-        }
-        
-        .cutting-guide {
-            text-align: center;
-            margin: 20px 0;
-            color: #c0392b;
-            font-weight: bold;
-            font-size: 18px;
-            padding: 10px;
-            background-color: #fadbd8;
-            border-radius: 8px;
-            border-left: 5px solid #c0392b;
-        }
-        
-        .layout-preview {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-        }
-        
-        .layout-diagram {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 columns */
-            grid-template-rows: repeat(4, 1fr); /* 4 rows */
-            gap: 0;
-            padding: 15px;
-            background: #ecf0f1;
+        .info-section {
+            background: #e8f4fc;
+            padding: 20px;
             border-radius: 10px;
-            border: 2px solid #bdc3c7;
+            margin-bottom: 25px;
         }
         
-        .layout-cell {
-            width: 70px;
-            height: 40px;
-            background: #3498db;
-            border: 1px solid #2980b9;
+        .info-section h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            color: white;
-            text-align: center;
-            font-weight: 600;
         }
         
-        .layout-label {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #2c3e50;
-            text-align: center;
-            grid-column: 1 / -1;
-            font-weight: 600;
-        }
-        
-        .paper-info {
-            text-align: center;
-            margin: 15px 0;
-            color: #2c3e50;
-            font-size: 16px;
-            font-weight: 600;
-            padding: 10px;
-            background-color: #d6eaf8;
-            border-radius: 8px;
-        }
-        
-        .dimensions-info {
-            text-align: center;
-            margin: 15px 0;
-            color: #27ae60;
-            font-size: 16px;
-            font-weight: 600;
-            background: #d5f5e3;
-            padding: 12px;
-            border-radius: 8px;
-            border-left: 5px solid #27ae60;
-        }
-        
-        .perfect-fit {
-            text-align: center;
-            margin: 15px 0;
-            color: #e67e22;
-            font-size: 18px;
-            font-weight: bold;
-            padding: 10px;
-            background-color: #fdebd0;
-            border-radius: 8px;
-            border: 2px dashed #e67e22;
-        }
-        
-        .instructions {
-            text-align: center;
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #fff9e6;
-            border-radius: 8px;
-            border-left: 5px solid #f1c40f;
-        }
-        
-        .instructions h3 {
-            color: #d35400;
+        .info-section p {
             margin-bottom: 10px;
+            line-height: 1.5;
         }
         
-        .instructions ol {
-            text-align: left;
-            max-width: 600px;
-            margin: 0 auto;
+        .hide-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
         }
         
-        .instructions li {
-            margin-bottom: 8px;
+        @media (max-width: 1100px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .form-section, .preview-section {
+                min-width: 100%;
+            }
+            
+            .form-section {
+                border-right: none;
+                border-bottom: 1px solid #e9ecef;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(6, 1fr);
+            }
+            
+            .hide-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(12, 1fr);
+            }
+            
+            .hide-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📇 Contact Card Generator - 12 Cards (3×4 Grid)</h1>
+        <header>
+            <h1>Professional Contact Card Generator</h1>
+            <div class="subtitle">Create ISO-standard business cards with your custom information</div>
+        </header>
         
-        <div class="input-section">
-            <div class="perfect-fit">
-                ✅ PERFECT FIT: 12 contact cards on A4 landscape paper with NO TRIMMING needed after cutting
-            </div>
-            
-            <div class="layout-preview">
-                <div class="layout-diagram">
-                    <div class="layout-cell">Card 1<br>99×52.5mm</div>
-                    <div class="layout-cell">Card 2<br>99×52.5mm</div>
-                    <div class="layout-cell">Card 3<br>99×52.5mm</div>
-                    <div class="layout-cell">Card 4<br>99×52.5mm</div>
-                    <div class="layout-cell">Card 5<br>99×52.5mm</div>
-                    <div class="layout-cell">Card 6<br>99×52.5mm</div>
-                    <div class="layout-cell">Card 7<br>99×52.5mm</div>
-                    <div class="layout-cell">Card 8<br>99×52.5mm</div>
-                    <div class="layout-cell">Card 9<br>99×52.5mm</div>
-                    <div class="layout-cell">Card 10<br>99×52.5mm</div>
-                    <div class="layout-cell">Card 11<br>99×52.5mm</div>
-                    <div class="layout-cell">Card 12<br>99×52.5mm</div>
-                    <div class="layout-label">3 columns × 4 rows layout with no gaps or margins (Landscape)</div>
-                </div>
-            </div>
-            
-            <div class="paper-info">
-                A4 Paper Size (Landscape): 297mm × 210mm
-            </div>
-            
-            <div class="dimensions-info">
-                Each card: 99mm × 52.5mm (297mm ÷ 3 = 99mm, 210mm ÷ 4 = 52.5mm)
-            </div>
-            
-            <div class="single-input-form">
-                <h3 style="text-align: center; margin-bottom: 20px; color: #2c3e50;">Enter Contact Information (Applies to All Cards)</h3>
-                
-                <div class="form-group">
-                    <label for="nameInput">Name:</label>
-                    <input type="text" id="nameInput" placeholder="Enter name">
+        <div class="content">
+            <div class="form-section">
+                <div class="info-section">
+                    <h3>📋 Business Card Standards</h3>
+                    <p>This generator follows international business card standards with proper hierarchy, typography, and information organization.</p>
+                    <p>Card size: 99mm × 52.5mm (3 columns × 4 rows on A4 landscape)</p>
                 </div>
                 
                 <div class="form-group">
-                    <label for="companyInput">Company Name:</label>
+                    <label for="nameInput">Full Name *</label>
+                    <input type="text" id="nameInput" placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="companyInput">Company Name</label>
                     <input type="text" id="companyInput" placeholder="Enter company name">
                 </div>
                 
                 <div class="form-group">
-                    <label for="designationInput">Designation:</label>
-                    <input type="text" id="designationInput" placeholder="Enter designation">
+                    <label for="designationInput">Designation / Title</label>
+                    <input type="text" id="designationInput" placeholder="Enter your job title">
                 </div>
                 
                 <div class="form-group">
-                    <label for="addressInput">Address:</label>
-                    <textarea id="addressInput" placeholder="Enter address"></textarea>
+                    <label for="addressInput">Address</label>
+                    <textarea id="addressInput" placeholder="Enter your business address"></textarea>
                 </div>
                 
                 <div class="form-group">
-                    <label for="mobileInput">Mobile:</label>
-                    <input type="text" id="mobileInput" placeholder="Enter mobile number">
+                    <label for="mobileInput">Mobile / Phone *</label>
+                    <input type="text" id="mobileInput" placeholder="Enter phone number">
                 </div>
                 
                 <div class="form-group">
-                    <label for="emailInput">Email:</label>
-                    <input type="text" id="emailInput" placeholder="Enter email">
+                    <label for="emailInput">Email Address *</label>
+                    <input type="text" id="emailInput" placeholder="Enter email address">
                 </div>
                 
                 <div class="form-group">
-                    <label for="urlInput">URL (for QR Code):</label>
-                    <input type="text" id="urlInput" placeholder="Enter URL">
+                    <label for="urlInput">Website / Social Media URL</label>
+                    <input type="text" id="urlInput" placeholder="Enter URL for QR code">
+                </div>
+                
+                <div class="hide-options">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="showCompany" checked>
+                        <label for="showCompany">Show Company</label>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="showDesignation" checked>
+                        <label for="showDesignation">Show Designation</label>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="showAddress" checked>
+                        <label for="showAddress">Show Address</label>
+                    </div>
                 </div>
                 
                 <div class="checkbox-group">
@@ -535,52 +502,53 @@
                 </div>
                 
                 <div class="form-group">
-                    <label>Company Logo:</label>
+                    <label>Company Logo</label>
                     <div class="logo-upload">
                         <input type="file" id="logoInput" accept="image/*" style="display: none;">
-                        <button type="button" onclick="document.getElementById('logoInput').click()" class="apply-btn" style="background: #9b59b6; margin-bottom: 10px;">
-                            Upload Company Logo
+                        <button type="button" onclick="document.getElementById('logoInput').click()" class="btn btn-primary">
+                            📁 Upload Company Logo
                         </button>
                         <div class="logo-preview" id="logoPreview">
                             <img id="logoPreviewImg" src="" alt="Logo Preview">
                         </div>
-                        <p style="font-size: 12px; color: #7f8c8d;">Recommended: Square logo, max 100×100px</p>
+                        <p style="font-size: 14px; color: #7f8c8d; margin-top: 10px;">Recommended: Square logo, max 100×100px</p>
                     </div>
                 </div>
                 
-                <button class="apply-btn" onclick="applyToAllCards()">Apply to All 12 Cards</button>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="applyToAllCards()">
+                        ✅ Apply to All Cards
+                    </button>
+                    <button class="btn btn-primary" onclick="generatePDF()">
+                        🖨️ Generate PDF
+                    </button>
+                    <button class="btn btn-reset" onclick="resetApp()">
+                        🔄 Reset All
+                    </button>
+                </div>
             </div>
             
-            <div class="cutting-guide">
-                ✂️ Cut along the dotted guidelines to get 12 identical cards - MINIMAL INK USAGE!
-            </div>
-            
-            <div class="instructions">
-                <h3>How to use:</h3>
-                <ol>
-                    <li>Fill in the contact information once in the form above</li>
-                    <li>Upload your company logo (optional)</li>
-                    <li>Click "Apply to All 12 Cards" to update all cards</li>
-                    <li>QR codes will be automatically generated from the URL</li>
-                    <li>Click "Generate Printable PDF" to create your A4 sheet</li>
-                    <li>Print the PDF on A4 paper (landscape) and cut along the dotted guidelines</li>
-                </ol>
+            <div class="preview-section">
+                <h3 style="margin-bottom: 20px; color: #2c3e50;">Card Preview (3 columns × 4 rows)</h3>
+                
+                <div class="cards-grid" id="cardsGrid">
+                    <!-- 12 card cells will be generated here dynamically -->
+                </div>
+                
+                <div class="status" id="status">
+                    Fill in your contact information and click "Apply to All Cards" to see the preview.
+                </div>
+                
+                <div class="info-section">
+                    <h3>💡 Printing Instructions</h3>
+                    <p>1. Fill in your contact information above</p>
+                    <p>2. Toggle visibility of fields using the checkboxes</p>
+                    <p>3. Click "Apply to All Cards" to update the preview</p>
+                    <p>4. Click "Generate PDF" to create a printable A4 sheet</p>
+                    <p>5. Print on A4 paper (landscape) and cut along the dotted guidelines</p>
+                </div>
             </div>
         </div>
-
-        <div class="preview-section" id="previewSection">
-            <h3 style="text-align: center; margin-bottom: 20px; color: #2c3e50;">Preview (3 columns × 4 rows):</h3>
-            <div class="cards-grid" id="cardsGrid">
-                <!-- 12 card cells will be generated here dynamically -->
-            </div>
-            
-            <div class="controls">
-                <button class="generate-btn" onclick="generatePDF()">🖨️ Generate Printable PDF</button>
-                <button class="reset-btn" onclick="resetApp()">🔄 Reset All</button>
-            </div>
-        </div>
-
-        <div class="status" id="status">Fill in the contact information and click "Apply to All 12 Cards" to get started!</div>
     </div>
 
     <script>
@@ -588,13 +556,15 @@
         const { jsPDF } = window.jspdf;
 
         // DOM elements
-        const previewSection = document.getElementById('previewSection');
         const cardsGrid = document.getElementById('cardsGrid');
         const status = document.getElementById('status');
         const logoInput = document.getElementById('logoInput');
         const logoPreview = document.getElementById('logoPreview');
         const logoPreviewImg = document.getElementById('logoPreviewImg');
         const showQRCheckbox = document.getElementById('showQR');
+        const showCompanyCheckbox = document.getElementById('showCompany');
+        const showDesignationCheckbox = document.getElementById('showDesignation');
+        const showAddressCheckbox = document.getElementById('showAddress');
 
         // Store card data for all 12 cards
         const cardData = Array(12).fill().map(() => ({
@@ -622,7 +592,7 @@
                     companyLogo = e.target.result;
                     logoPreviewImg.src = companyLogo;
                     logoPreview.style.display = 'block';
-                    status.textContent = 'Logo uploaded successfully! Click "Apply to All 12 Cards" to update preview.';
+                    status.textContent = 'Logo uploaded successfully! Click "Apply to All Cards" to update preview.';
                 };
                 
                 reader.readAsDataURL(file);
@@ -663,28 +633,31 @@
         function updateCardPreview(cardIndex) {
             const preview = document.getElementById(`cardPreview${cardIndex}`);
             const data = cardData[cardIndex];
+            const showCompany = showCompanyCheckbox.checked;
+            const showDesignation = showDesignationCheckbox.checked;
+            const showAddress = showAddressCheckbox.checked;
             
             preview.innerHTML = `
                 <div class="card-header">
                     <div class="card-logo" id="cardLogo${cardIndex}">
-                        ${data.logo ? `<img src="${data.logo}" alt="Logo">` : 'Logo'}
+                        ${data.logo ? `<img src="${data.logo}" alt="Logo">` : ''}
                     </div>
                     <div class="card-title">
-                        <div class="card-name">${data.name || 'Name'}</div>
-                        <div class="card-company">${data.company || 'Company'}</div>
-                        <div class="card-designation">${data.designation || 'Designation'}</div>
+                        <div class="card-name">${data.name || 'Your Name'}</div>
+                        ${showCompany && data.company ? `<div class="card-company">${data.company}</div>` : ''}
+                        ${showDesignation && data.designation ? `<div class="card-designation">${data.designation}</div>` : ''}
                     </div>
                 </div>
                 <div class="card-details">
                     <div class="card-text">
-                        ${data.address ? `<div class="card-field"><span class="card-label">Address:</span> ${data.address}</div>` : ''}
-                        ${data.mobile ? `<div class="card-field"><span class="card-label">Mobile:</span> ${data.mobile}</div>` : ''}
+                        ${showAddress && data.address ? `<div class="card-field"><span class="card-label">Address:</span> ${data.address}</div>` : ''}
+                        ${data.mobile ? `<div class="card-field"><span class="card-label">Phone:</span> ${data.mobile}</div>` : ''}
                         ${data.email ? `<div class="card-field"><span class="card-label">Email:</span> ${data.email}</div>` : ''}
-                        ${data.url ? `<div class="card-field"><span class="card-label">URL:</span> ${data.url}</div>` : ''}
+                        ${data.url ? `<div class="card-field"><span class="card-label">Website:</span> ${data.url}</div>` : ''}
                     </div>
                     <div class="card-qr">
                         <div class="qr-code" id="qrCode${cardIndex}">
-                            ${data.qrCode || 'QR Code'}
+                            ${data.qrCode || ''}
                         </div>
                     </div>
                 </div>
@@ -697,7 +670,7 @@
             const qrCodeElement = document.getElementById(`qrCode${cardIndex}`);
             
             if (!url) {
-                qrCodeElement.innerHTML = 'QR Code';
+                qrCodeElement.innerHTML = '';
                 return;
             }
             
@@ -774,6 +747,12 @@
             const horizontalGap = 0;
             const verticalGap = 0;
             
+            // Visibility settings
+            const showCompany = showCompanyCheckbox.checked;
+            const showDesignation = showDesignationCheckbox.checked;
+            const showAddress = showAddressCheckbox.checked;
+            const showQR = showQRCheckbox.checked;
+            
             // Add all 12 cards in a perfectly aligned 3x4 grid
             let cellIndex = 0;
             for (let row = 0; row < 4; row++) {
@@ -788,62 +767,69 @@
                     pdf.rect(xPos, yPos, cardWidth, cardHeight);
                     
                     // Add card content
-                    pdf.setFontSize(8);
+                    pdf.setFontSize(9);
                     pdf.setTextColor(0, 0, 0);
                     
                     // Add logo if available
                     if (data.logo) {
                         try {
-                            pdf.addImage(data.logo, 'PNG', xPos + 5, yPos + 5, 10, 10);
+                            pdf.addImage(data.logo, 'PNG', xPos + 5, yPos + 5, 12, 12);
                         } catch (error) {
                             console.error('Error adding logo to PDF:', error);
                         }
                     }
                     
+                    let currentY = yPos + 10;
+                    const textStartX = data.logo ? xPos + 20 : xPos + 5;
+                    
                     // Name
                     if (data.name) {
                         pdf.setFont(undefined, 'bold');
-                        pdf.text(data.name, xPos + (data.logo ? 18 : 5), yPos + 8, { maxWidth: cardWidth - 60 });
+                        pdf.text(data.name, textStartX, currentY, { maxWidth: cardWidth - 60 });
                         pdf.setFont(undefined, 'normal');
+                        currentY += 5;
                     }
                     
                     // Company
-                    if (data.company) {
-                        pdf.text(data.company, xPos + (data.logo ? 18 : 5), yPos + 13, { maxWidth: cardWidth - 60 });
+                    if (showCompany && data.company) {
+                        pdf.text(data.company, textStartX, currentY, { maxWidth: cardWidth - 60 });
+                        currentY += 4;
                     }
                     
                     // Designation
-                    if (data.designation) {
-                        pdf.text(data.designation, xPos + (data.logo ? 18 : 5), yPos + 18, { maxWidth: cardWidth - 60 });
+                    if (showDesignation && data.designation) {
+                        pdf.setFont(undefined, 'italic');
+                        pdf.text(data.designation, textStartX, currentY, { maxWidth: cardWidth - 60 });
+                        pdf.setFont(undefined, 'normal');
+                        currentY += 5;
                     }
                     
                     // Address
-                    let currentY = 23;
-                    if (data.address) {
-                        const addressLines = pdf.splitTextToSize(`Address: ${data.address}`, cardWidth - 60);
-                        pdf.text(addressLines, xPos + 5, yPos + currentY);
+                    if (showAddress && data.address) {
+                        const addressLines = pdf.splitTextToSize(data.address, cardWidth - 60);
+                        pdf.text(addressLines, xPos + 5, currentY);
                         currentY += (addressLines.length * 4) + 2;
                     }
                     
                     // Mobile
                     if (data.mobile) {
-                        pdf.text(`Mobile: ${data.mobile}`, xPos + 5, yPos + currentY, { maxWidth: cardWidth - 60 });
-                        currentY += 5;
+                        pdf.text(`Phone: ${data.mobile}`, xPos + 5, currentY, { maxWidth: cardWidth - 60 });
+                        currentY += 4;
                     }
                     
                     // Email
                     if (data.email) {
-                        pdf.text(`Email: ${data.email}`, xPos + 5, yPos + currentY, { maxWidth: cardWidth - 60 });
-                        currentY += 5;
+                        pdf.text(`Email: ${data.email}`, xPos + 5, currentY, { maxWidth: cardWidth - 60 });
+                        currentY += 4;
                     }
                     
                     // URL
                     if (data.url) {
-                        pdf.text(`URL: ${data.url}`, xPos + 5, yPos + currentY, { maxWidth: cardWidth - 60 });
+                        pdf.text(`Web: ${data.url}`, xPos + 5, currentY, { maxWidth: cardWidth - 60 });
                     }
                     
                     // Generate QR code for PDF (only if checkbox is checked)
-                    if (data.url && showQRCheckbox.checked) {
+                    if (data.url && showQR) {
                         try {
                             const qr = qrcode(0, 'H'); // High error correction
                             qr.addData(data.url);
@@ -878,11 +864,6 @@
                             pdf.addImage(qrDataURL, 'PNG', xPos + cardWidth - 25, yPos + 15, 15, 15);
                         } catch (error) {
                             console.error('Error generating QR code for PDF:', error);
-                            // Fallback: Draw a simple rectangle
-                            pdf.setDrawColor(200, 200, 200);
-                            pdf.rect(xPos + cardWidth - 25, yPos + 15, 15, 15);
-                            pdf.setFontSize(6);
-                            pdf.text('QR Code', xPos + cardWidth - 22, yPos + 23);
                         }
                     }
                     
@@ -915,7 +896,7 @@
             }
             
             // Save the PDF
-            pdf.save('12-contact-cards-A4-landscape.pdf');
+            pdf.save('professional-contact-cards.pdf');
             status.textContent = 'PDF generated successfully! Check your downloads folder.';
         }
 
@@ -930,6 +911,9 @@
             document.getElementById('urlInput').value = '';
             document.getElementById('logoInput').value = '';
             document.getElementById('showQR').checked = true;
+            document.getElementById('showCompany').checked = true;
+            document.getElementById('showDesignation').checked = true;
+            document.getElementById('showAddress').checked = true;
             
             // Clear logo preview
             logoPreview.style.display = 'none';
@@ -951,12 +935,31 @@
                 updateCardPreview(i);
             }
             
-            status.textContent = 'All data cleared. Fill in the contact information and click "Apply to All 12 Cards" to get started!';
+            status.textContent = 'All data cleared. Fill in the contact information and click "Apply to All Cards" to get started!';
         }
+
+        // Add event listeners for visibility toggles
+        showCompanyCheckbox.addEventListener('change', function() {
+            for (let i = 0; i < 12; i++) {
+                updateCardPreview(i);
+            }
+        });
+        
+        showDesignationCheckbox.addEventListener('change', function() {
+            for (let i = 0; i < 12; i++) {
+                updateCardPreview(i);
+            }
+        });
+        
+        showAddressCheckbox.addEventListener('change', function() {
+            for (let i = 0; i < 12; i++) {
+                updateCardPreview(i);
+            }
+        });
 
         // Initialize the grid on page load
         createCardsGrid();
-        status.textContent = 'Fill in the contact information and click "Apply to All 12 Cards" to get started!';
+        status.textContent = 'Fill in the contact information and click "Apply to All Cards" to get started!';
     </script>
 </body>
 </html>
