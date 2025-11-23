@@ -66,7 +66,7 @@
             color: #2c3e50;
         }
         
-        .form-group input {
+        .form-group input, .form-group textarea {
             width: 100%;
             padding: 12px;
             border: 1px solid #bdc3c7;
@@ -75,10 +75,26 @@
             transition: border-color 0.3s;
         }
         
-        .form-group input:focus {
+        .form-group input:focus, .form-group textarea:focus {
             border-color: #3498db;
             outline: none;
             box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .checkbox-group input {
+            width: auto;
+            margin-right: 10px;
         }
         
         .logo-upload {
@@ -494,6 +510,11 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="addressInput">Address:</label>
+                    <textarea id="addressInput" placeholder="Enter address"></textarea>
+                </div>
+                
+                <div class="form-group">
                     <label for="mobileInput">Mobile:</label>
                     <input type="text" id="mobileInput" placeholder="Enter mobile number">
                 </div>
@@ -506,6 +527,11 @@
                 <div class="form-group">
                     <label for="urlInput">URL (for QR Code):</label>
                     <input type="text" id="urlInput" placeholder="Enter URL">
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="showQR" checked>
+                    <label for="showQR">Show QR Code in PDF</label>
                 </div>
                 
                 <div class="form-group">
@@ -568,12 +594,14 @@
         const logoInput = document.getElementById('logoInput');
         const logoPreview = document.getElementById('logoPreview');
         const logoPreviewImg = document.getElementById('logoPreviewImg');
+        const showQRCheckbox = document.getElementById('showQR');
 
         // Store card data for all 12 cards
         const cardData = Array(12).fill().map(() => ({
             name: '',
             company: '',
             designation: '',
+            address: '',
             mobile: '',
             email: '',
             url: '',
@@ -649,6 +677,7 @@
                 </div>
                 <div class="card-details">
                     <div class="card-text">
+                        ${data.address ? `<div class="card-field"><span class="card-label">Address:</span> ${data.address}</div>` : ''}
                         ${data.mobile ? `<div class="card-field"><span class="card-label">Mobile:</span> ${data.mobile}</div>` : ''}
                         ${data.email ? `<div class="card-field"><span class="card-label">Email:</span> ${data.email}</div>` : ''}
                         ${data.url ? `<div class="card-field"><span class="card-label">URL:</span> ${data.url}</div>` : ''}
@@ -675,13 +704,13 @@
             // Clear previous QR code
             qrCodeElement.innerHTML = '';
             
-            // Generate QR code
-            const qr = qrcode(0, 'M');
+            // Generate QR code with higher error correction for better quality
+            const qr = qrcode(0, 'H'); // 'H' for High error correction
             qr.addData(url);
             qr.make();
             
-            // Create QR code image
-            const qrImg = qr.createImgTag(4);
+            // Create QR code image with better quality
+            const qrImg = qr.createImgTag(5); // Increased size for better quality
             qrCodeElement.innerHTML = qrImg;
         }
 
@@ -690,6 +719,7 @@
             const name = document.getElementById('nameInput').value;
             const company = document.getElementById('companyInput').value;
             const designation = document.getElementById('designationInput').value;
+            const address = document.getElementById('addressInput').value;
             const mobile = document.getElementById('mobileInput').value;
             const email = document.getElementById('emailInput').value;
             const url = document.getElementById('urlInput').value;
@@ -699,6 +729,7 @@
                 cardData[i].name = name;
                 cardData[i].company = company;
                 cardData[i].designation = designation;
+                cardData[i].address = address;
                 cardData[i].mobile = mobile;
                 cardData[i].email = email;
                 cardData[i].url = url;
@@ -786,30 +817,40 @@
                         pdf.text(data.designation, xPos + (data.logo ? 18 : 5), yPos + 18, { maxWidth: cardWidth - 60 });
                     }
                     
+                    // Address
+                    let currentY = 23;
+                    if (data.address) {
+                        const addressLines = pdf.splitTextToSize(`Address: ${data.address}`, cardWidth - 60);
+                        pdf.text(addressLines, xPos + 5, yPos + currentY);
+                        currentY += (addressLines.length * 4) + 2;
+                    }
+                    
                     // Mobile
                     if (data.mobile) {
-                        pdf.text(`Mobile: ${data.mobile}`, xPos + 5, yPos + 25, { maxWidth: cardWidth - 60 });
+                        pdf.text(`Mobile: ${data.mobile}`, xPos + 5, yPos + currentY, { maxWidth: cardWidth - 60 });
+                        currentY += 5;
                     }
                     
                     // Email
                     if (data.email) {
-                        pdf.text(`Email: ${data.email}`, xPos + 5, yPos + 30, { maxWidth: cardWidth - 60 });
+                        pdf.text(`Email: ${data.email}`, xPos + 5, yPos + currentY, { maxWidth: cardWidth - 60 });
+                        currentY += 5;
                     }
                     
                     // URL
                     if (data.url) {
-                        pdf.text(`URL: ${data.url}`, xPos + 5, yPos + 35, { maxWidth: cardWidth - 60 });
+                        pdf.text(`URL: ${data.url}`, xPos + 5, yPos + currentY, { maxWidth: cardWidth - 60 });
                     }
                     
-                    // Generate QR code for PDF (half the size)
-                    if (data.url) {
+                    // Generate QR code for PDF (only if checkbox is checked)
+                    if (data.url && showQRCheckbox.checked) {
                         try {
-                            const qr = qrcode(0, 'M');
+                            const qr = qrcode(0, 'H'); // High error correction
                             qr.addData(data.url);
                             qr.make();
                             
-                            // Get QR code as data URL
-                            const qrSize = 30; // Half the size for less ink
+                            // Get QR code as data URL with higher resolution
+                            const qrSize = 60; // Higher resolution for better quality
                             const qrCanvas = document.createElement('canvas');
                             qrCanvas.width = qrSize;
                             qrCanvas.height = qrSize;
@@ -819,7 +860,7 @@
                             qrCtx.fillStyle = '#FFFFFF';
                             qrCtx.fillRect(0, 0, qrSize, qrSize);
                             
-                            // Draw QR code
+                            // Draw QR code with better quality
                             const moduleCount = qr.getModuleCount();
                             const tileSize = qrSize / moduleCount;
                             
@@ -832,16 +873,16 @@
                                 }
                             }
                             
-                            // Add QR code to PDF (half the size)
+                            // Add QR code to PDF (small size but high quality)
                             const qrDataURL = qrCanvas.toDataURL('image/png');
-                            pdf.addImage(qrDataURL, 'PNG', xPos + cardWidth - 30, yPos + 15, 20, 20);
+                            pdf.addImage(qrDataURL, 'PNG', xPos + cardWidth - 25, yPos + 15, 15, 15);
                         } catch (error) {
                             console.error('Error generating QR code for PDF:', error);
                             // Fallback: Draw a simple rectangle
                             pdf.setDrawColor(200, 200, 200);
-                            pdf.rect(xPos + cardWidth - 30, yPos + 15, 20, 20);
+                            pdf.rect(xPos + cardWidth - 25, yPos + 15, 15, 15);
                             pdf.setFontSize(6);
-                            pdf.text('QR Code', xPos + cardWidth - 25, yPos + 25);
+                            pdf.text('QR Code', xPos + cardWidth - 22, yPos + 23);
                         }
                     }
                     
@@ -883,10 +924,12 @@
             document.getElementById('nameInput').value = '';
             document.getElementById('companyInput').value = '';
             document.getElementById('designationInput').value = '';
+            document.getElementById('addressInput').value = '';
             document.getElementById('mobileInput').value = '';
             document.getElementById('emailInput').value = '';
             document.getElementById('urlInput').value = '';
             document.getElementById('logoInput').value = '';
+            document.getElementById('showQR').checked = true;
             
             // Clear logo preview
             logoPreview.style.display = 'none';
@@ -897,7 +940,8 @@
                 cardData[i] = { 
                     name: '', 
                     company: '', 
-                    designation: '', 
+                    designation: '',
+                    address: '',
                     mobile: '', 
                     email: '', 
                     url: '', 
