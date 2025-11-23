@@ -242,10 +242,17 @@
         
         .card-header {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
+            justify-content: space-between;
             margin-bottom: 8px;
             padding-bottom: 8px;
             border-bottom: 1px solid #e9ecef;
+        }
+        
+        .card-left {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
         }
         
         .card-logo {
@@ -289,11 +296,29 @@
             font-style: italic;
         }
         
+        .card-qr {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-left: 10px;
+        }
+        
+        .card-qr img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
         .card-details {
             flex: 1;
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
+            flex-direction: column;
+            justify-content: center;
         }
         
         .card-text {
@@ -313,30 +338,6 @@
             font-weight: bold;
             color: #7f8c8d;
             font-size: 9px;
-        }
-        
-        .card-qr {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-        }
-        
-        .qr-code {
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: white;
-            border: 1px solid #e9ecef;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        
-        .qr-code img {
-            max-width: 100%;
-            max-height: 100%;
         }
         
         .cell-label {
@@ -639,13 +640,18 @@
             
             preview.innerHTML = `
                 <div class="card-header">
-                    <div class="card-logo" id="cardLogo${cardIndex}">
-                        ${data.logo ? `<img src="${data.logo}" alt="Logo">` : ''}
+                    <div class="card-left">
+                        <div class="card-logo" id="cardLogo${cardIndex}">
+                            ${data.logo ? `<img src="${data.logo}" alt="Logo">` : ''}
+                        </div>
+                        <div class="card-title">
+                            <div class="card-name">${data.name || 'Your Name'}</div>
+                            ${showCompany && data.company ? `<div class="card-company">${data.company}</div>` : ''}
+                            ${showDesignation && data.designation ? `<div class="card-designation">${data.designation}</div>` : ''}
+                        </div>
                     </div>
-                    <div class="card-title">
-                        <div class="card-name">${data.name || 'Your Name'}</div>
-                        ${showCompany && data.company ? `<div class="card-company">${data.company}</div>` : ''}
-                        ${showDesignation && data.designation ? `<div class="card-designation">${data.designation}</div>` : ''}
+                    <div class="card-qr" id="qrCode${cardIndex}">
+                        ${data.qrCode || ''}
                     </div>
                 </div>
                 <div class="card-details">
@@ -654,11 +660,6 @@
                         ${data.mobile ? `<div class="card-field"><span class="card-label">Phone:</span> ${data.mobile}</div>` : ''}
                         ${data.email ? `<div class="card-field"><span class="card-label">Email:</span> ${data.email}</div>` : ''}
                         ${data.url ? `<div class="card-field"><span class="card-label">Website:</span> ${data.url}</div>` : ''}
-                    </div>
-                    <div class="card-qr">
-                        <div class="qr-code" id="qrCode${cardIndex}">
-                            ${data.qrCode || ''}
-                        </div>
                     </div>
                 </div>
             `;
@@ -683,7 +684,7 @@
             qr.make();
             
             // Create QR code image with better quality
-            const qrImg = qr.createImgTag(5); // Increased size for better quality
+            const qrImg = qr.createImgTag(4); // Increased size for better quality
             qrCodeElement.innerHTML = qrImg;
         }
 
@@ -770,73 +771,26 @@
                     pdf.setFontSize(9);
                     pdf.setTextColor(0, 0, 0);
                     
+                    let currentY = yPos + 8;
+                    
                     // Add logo if available
                     if (data.logo) {
                         try {
-                            pdf.addImage(data.logo, 'PNG', xPos + 5, yPos + 5, 12, 12);
+                            pdf.addImage(data.logo, 'PNG', xPos + 5, currentY, 10, 10);
                         } catch (error) {
                             console.error('Error adding logo to PDF:', error);
                         }
                     }
                     
-                    let currentY = yPos + 10;
-                    const textStartX = data.logo ? xPos + 20 : xPos + 5;
-                    
-                    // Name
-                    if (data.name) {
-                        pdf.setFont(undefined, 'bold');
-                        pdf.text(data.name, textStartX, currentY, { maxWidth: cardWidth - 60 });
-                        pdf.setFont(undefined, 'normal');
-                        currentY += 5;
-                    }
-                    
-                    // Company
-                    if (showCompany && data.company) {
-                        pdf.text(data.company, textStartX, currentY, { maxWidth: cardWidth - 60 });
-                        currentY += 4;
-                    }
-                    
-                    // Designation
-                    if (showDesignation && data.designation) {
-                        pdf.setFont(undefined, 'italic');
-                        pdf.text(data.designation, textStartX, currentY, { maxWidth: cardWidth - 60 });
-                        pdf.setFont(undefined, 'normal');
-                        currentY += 5;
-                    }
-                    
-                    // Address
-                    if (showAddress && data.address) {
-                        const addressLines = pdf.splitTextToSize(data.address, cardWidth - 60);
-                        pdf.text(addressLines, xPos + 5, currentY);
-                        currentY += (addressLines.length * 4) + 2;
-                    }
-                    
-                    // Mobile
-                    if (data.mobile) {
-                        pdf.text(`Phone: ${data.mobile}`, xPos + 5, currentY, { maxWidth: cardWidth - 60 });
-                        currentY += 4;
-                    }
-                    
-                    // Email
-                    if (data.email) {
-                        pdf.text(`Email: ${data.email}`, xPos + 5, currentY, { maxWidth: cardWidth - 60 });
-                        currentY += 4;
-                    }
-                    
-                    // URL
-                    if (data.url) {
-                        pdf.text(`Web: ${data.url}`, xPos + 5, currentY, { maxWidth: cardWidth - 60 });
-                    }
-                    
-                    // Generate QR code for PDF (only if checkbox is checked)
-                    if (data.url && showQR) {
+                    // Add QR code if enabled and URL exists
+                    if (showQR && data.url) {
                         try {
                             const qr = qrcode(0, 'H'); // High error correction
                             qr.addData(data.url);
                             qr.make();
                             
                             // Get QR code as data URL with higher resolution
-                            const qrSize = 60; // Higher resolution for better quality
+                            const qrSize = 50; // Higher resolution for better quality
                             const qrCanvas = document.createElement('canvas');
                             qrCanvas.width = qrSize;
                             qrCanvas.height = qrSize;
@@ -859,12 +813,63 @@
                                 }
                             }
                             
-                            // Add QR code to PDF (small size but high quality)
+                            // Add QR code to PDF (top right corner)
                             const qrDataURL = qrCanvas.toDataURL('image/png');
-                            pdf.addImage(qrDataURL, 'PNG', xPos + cardWidth - 25, yPos + 15, 15, 15);
+                            pdf.addImage(qrDataURL, 'PNG', xPos + cardWidth - 25, currentY, 15, 15);
                         } catch (error) {
                             console.error('Error generating QR code for PDF:', error);
                         }
+                    }
+                    
+                    const textStartX = data.logo ? xPos + 18 : xPos + 5;
+                    const textWidth = cardWidth - (data.logo ? 40 : 25) - (showQR && data.url ? 20 : 0);
+                    
+                    // Name
+                    if (data.name) {
+                        pdf.setFont(undefined, 'bold');
+                        pdf.text(data.name, textStartX, currentY, { maxWidth: textWidth });
+                        pdf.setFont(undefined, 'normal');
+                        currentY += 5;
+                    }
+                    
+                    // Company
+                    if (showCompany && data.company) {
+                        pdf.text(data.company, textStartX, currentY, { maxWidth: textWidth });
+                        currentY += 4;
+                    }
+                    
+                    // Designation
+                    if (showDesignation && data.designation) {
+                        pdf.setFont(undefined, 'italic');
+                        pdf.text(data.designation, textStartX, currentY, { maxWidth: textWidth });
+                        pdf.setFont(undefined, 'normal');
+                        currentY += 5;
+                    }
+                    
+                    currentY += 2; // Add some space before contact details
+                    
+                    // Address
+                    if (showAddress && data.address) {
+                        const addressLines = pdf.splitTextToSize(data.address, cardWidth - 15);
+                        pdf.text(addressLines, xPos + 5, currentY);
+                        currentY += (addressLines.length * 4) + 2;
+                    }
+                    
+                    // Mobile
+                    if (data.mobile) {
+                        pdf.text(`Phone: ${data.mobile}`, xPos + 5, currentY, { maxWidth: cardWidth - 15 });
+                        currentY += 4;
+                    }
+                    
+                    // Email
+                    if (data.email) {
+                        pdf.text(`Email: ${data.email}`, xPos + 5, currentY, { maxWidth: cardWidth - 15 });
+                        currentY += 4;
+                    }
+                    
+                    // URL
+                    if (data.url) {
+                        pdf.text(`Web: ${data.url}`, xPos + 5, currentY, { maxWidth: cardWidth - 15 });
                     }
                     
                     cellIndex++;
