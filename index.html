@@ -526,7 +526,7 @@
             </div>
             
             <div class="cutting-guide">
-                ✂️ Cut along the grid lines to get 12 identical cards - NO TRIMMING NEEDED!
+                ✂️ Cut along the dotted guidelines to get 12 identical cards - MINIMAL INK USAGE!
             </div>
             
             <div class="instructions">
@@ -537,7 +537,7 @@
                     <li>Click "Apply to All 12 Cards" to update all cards</li>
                     <li>QR codes will be automatically generated from the URL</li>
                     <li>Click "Generate Printable PDF" to create your A4 sheet</li>
-                    <li>Print the PDF on A4 paper (landscape) and cut along the grid lines</li>
+                    <li>Print the PDF on A4 paper (landscape) and cut along the dotted guidelines</li>
                 </ol>
             </div>
         </div>
@@ -751,9 +751,9 @@
                     const yPos = row * (cardHeight + verticalGap);
                     const data = cardData[cellIndex];
                     
-                    // Draw card border
-                    pdf.setDrawColor(100, 100, 100);
-                    pdf.setLineWidth(0.2);
+                    // Draw card border (light gray)
+                    pdf.setDrawColor(200, 200, 200);
+                    pdf.setLineWidth(0.1);
                     pdf.rect(xPos, yPos, cardWidth, cardHeight);
                     
                     // Add card content
@@ -801,7 +801,7 @@
                         pdf.text(`URL: ${data.url}`, xPos + 5, yPos + 35, { maxWidth: cardWidth - 60 });
                     }
                     
-                    // Generate QR code for PDF (smaller size)
+                    // Generate QR code for PDF (half the size)
                     if (data.url) {
                         try {
                             const qr = qrcode(0, 'M');
@@ -809,7 +809,7 @@
                             qr.make();
                             
                             // Get QR code as data URL
-                            const qrSize = 50; // Smaller size for less ink
+                            const qrSize = 30; // Half the size for less ink
                             const qrCanvas = document.createElement('canvas');
                             qrCanvas.width = qrSize;
                             qrCanvas.height = qrSize;
@@ -832,16 +832,16 @@
                                 }
                             }
                             
-                            // Add QR code to PDF (smaller size)
+                            // Add QR code to PDF (half the size)
                             const qrDataURL = qrCanvas.toDataURL('image/png');
-                            pdf.addImage(qrDataURL, 'PNG', xPos + cardWidth - 35, yPos + 10, 25, 25);
+                            pdf.addImage(qrDataURL, 'PNG', xPos + cardWidth - 30, yPos + 15, 20, 20);
                         } catch (error) {
                             console.error('Error generating QR code for PDF:', error);
                             // Fallback: Draw a simple rectangle
                             pdf.setDrawColor(200, 200, 200);
-                            pdf.rect(xPos + cardWidth - 35, yPos + 10, 25, 25);
+                            pdf.rect(xPos + cardWidth - 30, yPos + 15, 20, 20);
                             pdf.setFontSize(6);
-                            pdf.text('QR Code', xPos + cardWidth - 30, yPos + 25);
+                            pdf.text('QR Code', xPos + cardWidth - 25, yPos + 25);
                         }
                     }
                     
@@ -849,18 +849,28 @@
                 }
             }
             
-            // Add cutting guidelines
-            pdf.setDrawColor(255, 0, 0);
+            // Add cutting guidelines (dotted lines with minimal ink usage)
+            pdf.setDrawColor(180, 180, 180); // Light gray for minimal ink
             pdf.setLineWidth(0.1);
+            
+            // Create dashed line effect manually
+            const dashLength = 2; // mm
+            const gapLength = 2; // mm
             
             // Vertical cutting lines (between columns)
             for (let i = 1; i < 3; i++) {
-                pdf.line(i * cardWidth, 0, i * cardWidth, pdfHeight);
+                const x = i * cardWidth;
+                for (let y = 0; y < pdfHeight; y += dashLength + gapLength) {
+                    pdf.line(x, y, x, Math.min(y + dashLength, pdfHeight));
+                }
             }
             
             // Horizontal cutting lines (between rows)
             for (let i = 1; i < 4; i++) {
-                pdf.line(0, i * cardHeight, pdfWidth, i * cardHeight);
+                const y = i * cardHeight;
+                for (let x = 0; x < pdfWidth; x += dashLength + gapLength) {
+                    pdf.line(x, y, Math.min(x + dashLength, pdfWidth), y);
+                }
             }
             
             // Save the PDF
