@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Card Generator - 12 Cards (4x3 Grid)</title>
+    <title>Contact Card Generator - 12 Cards (3x4 Grid)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <style>
@@ -107,23 +107,23 @@
         
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(3, 1fr);
+            grid-template-columns: repeat(3, 1fr); /* 3 columns */
+            grid-template-rows: repeat(4, 1fr); /* 4 rows */
             gap: 0;
             margin: 20px 0;
             background: white;
             padding: 0;
             border: 2px solid #2c3e50;
             justify-items: center;
-            max-width: 1000px;
+            max-width: 900px;
             margin-left: auto;
             margin-right: auto;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         
         .card-cell {
-            width: 7.425cm; /* 74.25mm */
-            height: 7cm; /* 70mm */
+            width: 9.9cm; /* 99mm */
+            height: 5.25cm; /* 52.5mm */
             border: 1px solid #bdc3c7;
             overflow: hidden;
             display: flex;
@@ -159,8 +159,15 @@
         .card-details {
             flex: 1;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             justify-content: space-between;
+        }
+        
+        .card-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
         .card-field {
@@ -174,14 +181,15 @@
         }
         
         .card-qr {
-            text-align: center;
-            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
         }
         
         .qr-code {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -287,8 +295,8 @@
         
         .layout-diagram {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(3, 1fr);
+            grid-template-columns: repeat(3, 1fr); /* 3 columns */
+            grid-template-rows: repeat(4, 1fr); /* 4 rows */
             gap: 0;
             padding: 15px;
             background: #ecf0f1;
@@ -298,7 +306,7 @@
         
         .layout-cell {
             width: 70px;
-            height: 50px;
+            height: 40px;
             background: #3498db;
             border: 1px solid #2980b9;
             display: flex;
@@ -381,7 +389,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>📇 Contact Card Generator - 12 Cards (4×3 Grid)</h1>
+        <h1>📇 Contact Card Generator - 12 Cards (3×4 Grid)</h1>
         
         <div class="input-section">
             <div class="perfect-fit">
@@ -390,19 +398,19 @@
             
             <div class="layout-preview">
                 <div class="layout-diagram">
-                    <div class="layout-cell">Card 1<br>74.25×70mm</div>
-                    <div class="layout-cell">Card 2<br>74.25×70mm</div>
-                    <div class="layout-cell">Card 3<br>74.25×70mm</div>
-                    <div class="layout-cell">Card 4<br>74.25×70mm</div>
-                    <div class="layout-cell">Card 5<br>74.25×70mm</div>
-                    <div class="layout-cell">Card 6<br>74.25×70mm</div>
-                    <div class="layout-cell">Card 7<br>74.25×70mm</div>
-                    <div class="layout-cell">Card 8<br>74.25×70mm</div>
-                    <div class="layout-cell">Card 9<br>74.25×70mm</div>
-                    <div class="layout-cell">Card 10<br>74.25×70mm</div>
-                    <div class="layout-cell">Card 11<br>74.25×70mm</div>
-                    <div class="layout-cell">Card 12<br>74.25×70mm</div>
-                    <div class="layout-label">4 columns × 3 rows layout with no gaps or margins (Landscape)</div>
+                    <div class="layout-cell">Card 1<br>99×52.5mm</div>
+                    <div class="layout-cell">Card 2<br>99×52.5mm</div>
+                    <div class="layout-cell">Card 3<br>99×52.5mm</div>
+                    <div class="layout-cell">Card 4<br>99×52.5mm</div>
+                    <div class="layout-cell">Card 5<br>99×52.5mm</div>
+                    <div class="layout-cell">Card 6<br>99×52.5mm</div>
+                    <div class="layout-cell">Card 7<br>99×52.5mm</div>
+                    <div class="layout-cell">Card 8<br>99×52.5mm</div>
+                    <div class="layout-cell">Card 9<br>99×52.5mm</div>
+                    <div class="layout-cell">Card 10<br>99×52.5mm</div>
+                    <div class="layout-cell">Card 11<br>99×52.5mm</div>
+                    <div class="layout-cell">Card 12<br>99×52.5mm</div>
+                    <div class="layout-label">3 columns × 4 rows layout with no gaps or margins (Landscape)</div>
                 </div>
             </div>
             
@@ -411,7 +419,7 @@
             </div>
             
             <div class="dimensions-info">
-                Each card: 74.25mm × 70mm (297mm ÷ 4 = 74.25mm, 210mm ÷ 3 = 70mm)
+                Each card: 99mm × 52.5mm (297mm ÷ 3 = 99mm, 210mm ÷ 4 = 52.5mm)
             </div>
             
             <div class="single-input-form">
@@ -457,7 +465,7 @@
         </div>
 
         <div class="preview-section" id="previewSection">
-            <h3 style="text-align: center; margin-bottom: 20px; color: #2c3e50;">Preview (4 columns × 3 rows):</h3>
+            <h3 style="text-align: center; margin-bottom: 20px; color: #2c3e50;">Preview (3 columns × 4 rows):</h3>
             <div class="cards-grid" id="cardsGrid">
                 <!-- 12 card cells will be generated here dynamically -->
             </div>
@@ -489,7 +497,7 @@
             qrCode: ''
         }));
 
-        // Create 12 card cells for preview (3 rows of 4)
+        // Create 12 card cells for preview (4 rows of 3)
         function createCardsGrid() {
             cardsGrid.innerHTML = '';
             
@@ -529,7 +537,7 @@
                     <div class="card-name">${data.name || 'Name'}</div>
                 </div>
                 <div class="card-details">
-                    <div>
+                    <div class="card-text">
                         ${data.mobile ? `<div class="card-field"><span class="card-label">Mobile:</span> ${data.mobile}</div>` : ''}
                         ${data.email ? `<div class="card-field"><span class="card-label">Email:</span> ${data.email}</div>` : ''}
                         ${data.url ? `<div class="card-field"><span class="card-label">URL:</span> ${data.url}</div>` : ''}
@@ -611,18 +619,18 @@
             const pdfWidth = pdf.internal.pageSize.getWidth(); // 297mm
             const pdfHeight = pdf.internal.pageSize.getHeight(); // 210mm
             
-            // Set dimensions for 4x3 grid - PERFECT A4 LANDSCAPE FIT
-            const cardWidth = 74.25; // 297mm / 4 = 74.25mm
-            const cardHeight = 70; // 210mm / 3 = 70mm
+            // Set dimensions for 3x4 grid - PERFECT A4 LANDSCAPE FIT
+            const cardWidth = 99; // 297mm / 3 = 99mm
+            const cardHeight = 52.5; // 210mm / 4 = 52.5mm
             
             // No gaps between cards
             const horizontalGap = 0;
             const verticalGap = 0;
             
-            // Add all 12 cards in a perfectly aligned 4x3 grid
+            // Add all 12 cards in a perfectly aligned 3x4 grid
             let cellIndex = 0;
-            for (let row = 0; row < 3; row++) {
-                for (let col = 0; col < 4; col++) {
+            for (let row = 0; row < 4; row++) {
+                for (let col = 0; col < 3; col++) {
                     const xPos = col * (cardWidth + horizontalGap);
                     const yPos = row * (cardHeight + verticalGap);
                     const data = cardData[cellIndex];
@@ -639,23 +647,23 @@
                     // Name
                     if (data.name) {
                         pdf.setFont(undefined, 'bold');
-                        pdf.text(data.name, xPos + 5, yPos + 8, { maxWidth: cardWidth - 10 });
+                        pdf.text(data.name, xPos + 5, yPos + 8, { maxWidth: cardWidth - 60 });
                         pdf.setFont(undefined, 'normal');
                     }
                     
                     // Mobile
                     if (data.mobile) {
-                        pdf.text(`Mobile: ${data.mobile}`, xPos + 5, yPos + 15, { maxWidth: cardWidth - 10 });
+                        pdf.text(`Mobile: ${data.mobile}`, xPos + 5, yPos + 15, { maxWidth: cardWidth - 60 });
                     }
                     
                     // Email
                     if (data.email) {
-                        pdf.text(`Email: ${data.email}`, xPos + 5, yPos + 22, { maxWidth: cardWidth - 10 });
+                        pdf.text(`Email: ${data.email}`, xPos + 5, yPos + 22, { maxWidth: cardWidth - 60 });
                     }
                     
                     // URL
                     if (data.url) {
-                        pdf.text(`URL: ${data.url}`, xPos + 5, yPos + 29, { maxWidth: cardWidth - 35 });
+                        pdf.text(`URL: ${data.url}`, xPos + 5, yPos + 29, { maxWidth: cardWidth - 60 });
                     }
                     
                     // Generate QR code for PDF
@@ -691,14 +699,14 @@
                             
                             // Add QR code to PDF
                             const qrDataURL = qrCanvas.toDataURL('image/png');
-                            pdf.addImage(qrDataURL, 'PNG', xPos + cardWidth - 25, yPos + cardHeight - 25, 20, 20);
+                            pdf.addImage(qrDataURL, 'PNG', xPos + cardWidth - 45, yPos + 5, 40, 40);
                         } catch (error) {
                             console.error('Error generating QR code for PDF:', error);
                             // Fallback: Draw a simple rectangle
                             pdf.setDrawColor(200, 200, 200);
-                            pdf.rect(xPos + cardWidth - 25, yPos + cardHeight - 25, 20, 20);
+                            pdf.rect(xPos + cardWidth - 45, yPos + 5, 40, 40);
                             pdf.setFontSize(6);
-                            pdf.text('QR Code', xPos + cardWidth - 23, yPos + cardHeight - 18);
+                            pdf.text('QR Code', xPos + cardWidth - 40, yPos + 25);
                         }
                     }
                     
@@ -710,13 +718,13 @@
             pdf.setDrawColor(255, 0, 0);
             pdf.setLineWidth(0.1);
             
-            // Vertical cutting lines
-            for (let i = 1; i < 4; i++) {
+            // Vertical cutting lines (between columns)
+            for (let i = 1; i < 3; i++) {
                 pdf.line(i * cardWidth, 0, i * cardWidth, pdfHeight);
             }
             
-            // Horizontal cutting lines
-            for (let i = 1; i < 3; i++) {
+            // Horizontal cutting lines (between rows)
+            for (let i = 1; i < 4; i++) {
                 pdf.line(0, i * cardHeight, pdfWidth, i * cardHeight);
             }
             
