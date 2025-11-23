@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Card Generator - 12 Cards (4x3 Grid)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -42,9 +42,62 @@
             border: 3px dashed #3498db;
             border-radius: 12px;
             padding: 30px;
-            text-align: center;
             margin-bottom: 30px;
             background-color: #f8fafc;
+        }
+        
+        .single-input-form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .apply-btn {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
+            transition: all 0.3s ease;
+        }
+        
+        .apply-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1);
         }
         
         .preview-section {
@@ -136,31 +189,9 @@
             border: 1px solid #ddd;
         }
         
-        .card-inputs {
-            margin-top: 10px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 5px;
-        }
-        
-        .input-group {
-            margin-bottom: 8px;
-        }
-        
-        .input-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 3px;
-            color: #2c3e50;
-        }
-        
-        .input-group input {
-            width: 100%;
-            padding: 5px;
-            border: 1px solid #bdc3c7;
-            border-radius: 3px;
-            font-size: 12px;
+        .qr-code img {
+            max-width: 100%;
+            max-height: 100%;
         }
         
         .cell-label {
@@ -346,30 +377,6 @@
         .instructions li {
             margin-bottom: 8px;
         }
-        
-        .bulk-actions {
-            text-align: center;
-            margin: 20px 0;
-        }
-        
-        .bulk-btn {
-            background: linear-gradient(to right, #9b59b6, #8e44ad);
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            margin: 5px;
-            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
-            transition: all 0.3s ease;
-        }
-        
-        .bulk-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1);
-        }
     </style>
 </head>
 <body>
@@ -383,33 +390,54 @@
             
             <div class="layout-preview">
                 <div class="layout-diagram">
-                    <div class="layout-cell">Card 1<br>52.5×74.25mm</div>
-                    <div class="layout-cell">Card 2<br>52.5×74.25mm</div>
-                    <div class="layout-cell">Card 3<br>52.5×74.25mm</div>
-                    <div class="layout-cell">Card 4<br>52.5×74.25mm</div>
-                    <div class="layout-cell">Card 5<br>52.5×74.25mm</div>
-                    <div class="layout-cell">Card 6<br>52.5×74.25mm</div>
-                    <div class="layout-cell">Card 7<br>52.5×74.25mm</div>
-                    <div class="layout-cell">Card 8<br>52.5×74.25mm</div>
-                    <div class="layout-cell">Card 9<br>52.5×74.25mm</div>
-                    <div class="layout-cell">Card 10<br>52.5×74.25mm</div>
-                    <div class="layout-cell">Card 11<br>52.5×74.25mm</div>
-                    <div class="layout-cell">Card 12<br>52.5×74.25mm</div>
-                    <div class="layout-label">4 columns × 3 rows layout with no gaps or margins</div>
+                    <div class="layout-cell">Card 1<br>74.25×52.5mm</div>
+                    <div class="layout-cell">Card 2<br>74.25×52.5mm</div>
+                    <div class="layout-cell">Card 3<br>74.25×52.5mm</div>
+                    <div class="layout-cell">Card 4<br>74.25×52.5mm</div>
+                    <div class="layout-cell">Card 5<br>74.25×52.5mm</div>
+                    <div class="layout-cell">Card 6<br>74.25×52.5mm</div>
+                    <div class="layout-cell">Card 7<br>74.25×52.5mm</div>
+                    <div class="layout-cell">Card 8<br>74.25×52.5mm</div>
+                    <div class="layout-cell">Card 9<br>74.25×52.5mm</div>
+                    <div class="layout-cell">Card 10<br>74.25×52.5mm</div>
+                    <div class="layout-cell">Card 11<br>74.25×52.5mm</div>
+                    <div class="layout-cell">Card 12<br>74.25×52.5mm</div>
+                    <div class="layout-label">4 columns × 3 rows layout with no gaps or margins (Landscape)</div>
                 </div>
             </div>
             
             <div class="paper-info">
-                A4 Paper Size: 210mm × 297mm
+                A4 Paper Size (Landscape): 297mm × 210mm
             </div>
             
             <div class="dimensions-info">
-                Each card: 52.5mm × 74.25mm (210mm ÷ 4 = 52.5mm, 297mm ÷ 4 = 74.25mm)
+                Each card: 74.25mm × 52.5mm (297mm ÷ 4 = 74.25mm, 210mm ÷ 4 = 52.5mm)
             </div>
             
-            <div class="bulk-actions">
-                <button class="bulk-btn" onclick="fillSampleData()">Fill Sample Data</button>
-                <button class="bulk-btn" onclick="clearAllData()">Clear All Data</button>
+            <div class="single-input-form">
+                <h3 style="text-align: center; margin-bottom: 20px; color: #2c3e50;">Enter Contact Information (Applies to All Cards)</h3>
+                
+                <div class="form-group">
+                    <label for="nameInput">Name:</label>
+                    <input type="text" id="nameInput" placeholder="Enter name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="mobileInput">Mobile:</label>
+                    <input type="text" id="mobileInput" placeholder="Enter mobile number">
+                </div>
+                
+                <div class="form-group">
+                    <label for="emailInput">Email:</label>
+                    <input type="text" id="emailInput" placeholder="Enter email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="urlInput">URL (for QR Code):</label>
+                    <input type="text" id="urlInput" placeholder="Enter URL">
+                </div>
+                
+                <button class="apply-btn" onclick="applyToAllCards()">Apply to All 12 Cards</button>
             </div>
             
             <div class="cutting-guide">
@@ -419,8 +447,9 @@
             <div class="instructions">
                 <h3>How to use:</h3>
                 <ol>
-                    <li>Fill in the contact information for each card</li>
-                    <li>QR codes will be automatically generated from the URLs</li>
+                    <li>Fill in the contact information once in the form above</li>
+                    <li>Click "Apply to All 12 Cards" to update all cards</li>
+                    <li>QR codes will be automatically generated from the URL</li>
                     <li>Click "Generate Printable PDF" to create your A4 sheet</li>
                     <li>Print the PDF on A4 paper and cut along the grid lines</li>
                 </ol>
@@ -439,7 +468,7 @@
             </div>
         </div>
 
-        <div class="status" id="status">Fill in the contact information to get started!</div>
+        <div class="status" id="status">Fill in the contact information and click "Apply to All 12 Cards" to get started!</div>
     </div>
 
     <script>
@@ -451,7 +480,7 @@
         const cardsGrid = document.getElementById('cardsGrid');
         const status = document.getElementById('status');
 
-        // Store card data for each cell (12 cells)
+        // Store card data for all 12 cards
         const cardData = Array(12).fill().map(() => ({
             name: '',
             mobile: '',
@@ -479,68 +508,15 @@
                 cardPreview.className = 'card-preview';
                 cardPreview.id = `cardPreview${i}`;
                 
-                // Create input section
-                const cardInputs = document.createElement('div');
-                cardInputs.className = 'card-inputs';
-                
-                // Name input
-                const nameGroup = document.createElement('div');
-                nameGroup.className = 'input-group';
-                nameGroup.innerHTML = `
-                    <label for="nameInput${i}">Name:</label>
-                    <input type="text" id="nameInput${i}" class="name-input" placeholder="Enter name" 
-                           oninput="updateCardData(${i}, 'name', this.value)">
-                `;
-                
-                // Mobile input
-                const mobileGroup = document.createElement('div');
-                mobileGroup.className = 'input-group';
-                mobileGroup.innerHTML = `
-                    <label for="mobileInput${i}">Mobile:</label>
-                    <input type="text" id="mobileInput${i}" class="mobile-input" placeholder="Enter mobile number" 
-                           oninput="updateCardData(${i}, 'mobile', this.value)">
-                `;
-                
-                // Email input
-                const emailGroup = document.createElement('div');
-                emailGroup.className = 'input-group';
-                emailGroup.innerHTML = `
-                    <label for="emailInput${i}">Email:</label>
-                    <input type="text" id="emailInput${i}" class="email-input" placeholder="Enter email" 
-                           oninput="updateCardData(${i}, 'email', this.value)">
-                `;
-                
-                // URL input
-                const urlGroup = document.createElement('div');
-                urlGroup.className = 'input-group';
-                urlGroup.innerHTML = `
-                    <label for="urlInput${i}">URL (for QR):</label>
-                    <input type="text" id="urlInput${i}" class="url-input" placeholder="Enter URL" 
-                           oninput="updateCardData(${i}, 'url', this.value); generateQRCode(${i})">
-                `;
-                
-                // Assemble the inputs
-                cardInputs.appendChild(nameGroup);
-                cardInputs.appendChild(mobileGroup);
-                cardInputs.appendChild(emailGroup);
-                cardInputs.appendChild(urlGroup);
-                
                 // Assemble the cell
                 cell.appendChild(label);
                 cell.appendChild(cardPreview);
-                cell.appendChild(cardInputs);
                 
                 cardsGrid.appendChild(cell);
                 
                 // Initialize the card preview
                 updateCardPreview(i);
             }
-        }
-
-        // Update card data and preview
-        function updateCardData(cardIndex, field, value) {
-            cardData[cardIndex][field] = value;
-            updateCardPreview(cardIndex);
         }
 
         // Update card preview display
@@ -559,7 +535,9 @@
                         ${data.url ? `<div class="card-field"><span class="card-label">URL:</span> ${data.url}</div>` : ''}
                     </div>
                     <div class="card-qr">
-                        ${data.qrCode ? `<div class="qr-code" id="qrCode${cardIndex}">${data.qrCode}</div>` : '<div class="qr-code">QR Code</div>'}
+                        <div class="qr-code" id="qrCode${cardIndex}">
+                            ${data.qrCode || 'QR Code'}
+                        </div>
                     </div>
                 </div>
             `;
@@ -568,91 +546,74 @@
         // Generate QR code for a card
         function generateQRCode(cardIndex) {
             const url = cardData[cardIndex].url;
+            const qrCodeElement = document.getElementById(`qrCode${cardIndex}`);
+            
             if (!url) {
-                cardData[cardIndex].qrCode = '';
-                updateCardPreview(cardIndex);
+                qrCodeElement.innerHTML = 'QR Code';
                 return;
             }
             
-            // Simple QR code representation (in a real app, you'd use a QR code library)
-            // For demo purposes, we're just showing the URL shortened
-            const qrText = url.length > 15 ? url.substring(0, 15) + '...' : url;
-            cardData[cardIndex].qrCode = `<div style="font-size:8px; word-break:break-all;">${qrText}</div>`;
-            updateCardPreview(cardIndex);
+            // Clear previous QR code
+            qrCodeElement.innerHTML = '';
+            
+            // Generate QR code
+            const qr = qrcode(0, 'M');
+            qr.addData(url);
+            qr.make();
+            
+            // Create QR code image
+            const qrImg = qr.createImgTag(4);
+            qrCodeElement.innerHTML = qrImg;
         }
 
-        // Fill sample data for testing
-        function fillSampleData() {
-            const sampleData = [
-                { name: 'John Doe', mobile: '+1 (555) 123-4567', email: 'john.doe@example.com', url: 'https://johndoe.com' },
-                { name: 'Jane Smith', mobile: '+1 (555) 987-6543', email: 'jane.smith@example.com', url: 'https://janesmith.com' },
-                { name: 'Robert Johnson', mobile: '+1 (555) 456-7890', email: 'robert.j@example.com', url: 'https://robertj.com' },
-                { name: 'Emily Davis', mobile: '+1 (555) 234-5678', email: 'emily.davis@example.com', url: 'https://emilydavis.com' },
-                { name: 'Michael Wilson', mobile: '+1 (555) 876-5432', email: 'm.wilson@example.com', url: 'https://mwilson.com' },
-                { name: 'Sarah Brown', mobile: '+1 (555) 345-6789', email: 'sarah.brown@example.com', url: 'https://sarahbrown.com' },
-                { name: 'David Miller', mobile: '+1 (555) 765-4321', email: 'david.miller@example.com', url: 'https://davidmiller.com' },
-                { name: 'Lisa Taylor', mobile: '+1 (555) 456-1234', email: 'lisa.taylor@example.com', url: 'https://lisataylor.com' },
-                { name: 'James Anderson', mobile: '+1 (555) 654-3210', email: 'j.anderson@example.com', url: 'https://jamesanderson.com' },
-                { name: 'Amanda Thomas', mobile: '+1 (555) 567-8901', email: 'amanda.thomas@example.com', url: 'https://amandathomas.com' },
-                { name: 'Christopher Lee', mobile: '+1 (555) 432-1098', email: 'chris.lee@example.com', url: 'https://chrislee.com' },
-                { name: 'Jessica White', mobile: '+1 (555) 890-1234', email: 'jessica.white@example.com', url: 'https://jessicawhite.com' }
-            ];
+        // Apply the same data to all cards
+        function applyToAllCards() {
+            const name = document.getElementById('nameInput').value;
+            const mobile = document.getElementById('mobileInput').value;
+            const email = document.getElementById('emailInput').value;
+            const url = document.getElementById('urlInput').value;
             
+            // Update all cards with the same data
             for (let i = 0; i < 12; i++) {
-                const data = sampleData[i] || { name: '', mobile: '', email: '', url: '' };
-                cardData[i] = { ...data, qrCode: '' };
-                
-                // Update inputs
-                document.getElementById(`nameInput${i}`).value = data.name;
-                document.getElementById(`mobileInput${i}`).value = data.mobile;
-                document.getElementById(`emailInput${i}`).value = data.email;
-                document.getElementById(`urlInput${i}`).value = data.url;
-                
-                // Generate QR code
-                if (data.url) {
-                    generateQRCode(i);
-                } else {
-                    updateCardPreview(i);
-                }
-            }
-            
-            status.textContent = 'Sample data filled! You can now generate the PDF.';
-        }
-
-        // Clear all data
-        function clearAllData() {
-            for (let i = 0; i < 12; i++) {
-                cardData[i] = { name: '', mobile: '', email: '', url: '', qrCode: '' };
-                
-                // Clear inputs
-                document.getElementById(`nameInput${i}`).value = '';
-                document.getElementById(`mobileInput${i}`).value = '';
-                document.getElementById(`emailInput${i}`).value = '';
-                document.getElementById(`urlInput${i}`).value = '';
+                cardData[i].name = name;
+                cardData[i].mobile = mobile;
+                cardData[i].email = email;
+                cardData[i].url = url;
                 
                 updateCardPreview(i);
+                generateQRCode(i);
             }
             
-            status.textContent = 'All data cleared. Fill in the contact information to get started!';
+            status.textContent = 'Contact information applied to all 12 cards! You can now generate the PDF.';
         }
 
-        // Generate PDF
+        // Generate PDF (Landscape orientation)
         function generatePDF() {
+            // Check if at least one field is filled
+            const hasData = cardData.some(card => 
+                card.name || card.mobile || card.email || card.url
+            );
+            
+            if (!hasData) {
+                status.textContent = 'Please fill in at least one field before generating PDF.';
+                return;
+            }
+
             status.textContent = 'Generating PDF...';
 
-            // Create PDF in A4 format
+            // Create PDF in A4 landscape format
             const pdf = new jsPDF({
-                orientation: 'portrait',
+                orientation: 'landscape',
                 unit: 'mm',
                 format: 'a4'
             });
 
-            const pdfWidth = pdf.internal.pageSize.getWidth(); // 210mm
-            const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
+            const pdfWidth = pdf.internal.pageSize.getWidth(); // 297mm
+            const pdfHeight = pdf.internal.pageSize.getHeight(); // 210mm
             
-            // Set dimensions for 4x3 grid - PERFECT A4 FIT
-            const cardWidth = 52.5; // 210mm / 4 = 52.5mm
-            const cardHeight = 74.25; // 297mm / 4 = 74.25mm
+            // Set dimensions for 4x3 grid - PERFECT A4 LANDSCAPE FIT
+            const cardWidth = 74.25; // 297mm / 4 = 74.25mm
+            const cardHeight = 52.5; // 210mm / 4 = 52.5mm
             
             // No gaps between cards
             const horizontalGap = 0;
@@ -672,38 +633,73 @@
                     pdf.rect(xPos, yPos, cardWidth, cardHeight);
                     
                     // Add card content
-                    pdf.setFontSize(10);
+                    pdf.setFontSize(8);
                     pdf.setTextColor(0, 0, 0);
                     
                     // Name
                     if (data.name) {
                         pdf.setFont(undefined, 'bold');
-                        pdf.text(data.name, xPos + 5, yPos + 8);
+                        pdf.text(data.name, xPos + 5, yPos + 8, { maxWidth: cardWidth - 10 });
                         pdf.setFont(undefined, 'normal');
                     }
                     
                     // Mobile
                     if (data.mobile) {
-                        pdf.text(`Mobile: ${data.mobile}`, xPos + 5, yPos + 15);
+                        pdf.text(`Mobile: ${data.mobile}`, xPos + 5, yPos + 15, { maxWidth: cardWidth - 10 });
                     }
                     
                     // Email
                     if (data.email) {
-                        pdf.text(`Email: ${data.email}`, xPos + 5, yPos + 22);
+                        pdf.text(`Email: ${data.email}`, xPos + 5, yPos + 22, { maxWidth: cardWidth - 10 });
                     }
                     
                     // URL
                     if (data.url) {
-                        pdf.text(`URL: ${data.url}`, xPos + 5, yPos + 29);
+                        pdf.text(`URL: ${data.url}`, xPos + 5, yPos + 29, { maxWidth: cardWidth - 35 });
                     }
                     
-                    // QR Code area (simulated)
+                    // Generate QR code for PDF
                     if (data.url) {
-                        pdf.setDrawColor(200, 200, 200);
-                        pdf.rect(xPos + cardWidth - 25, yPos + cardHeight - 25, 20, 20);
-                        pdf.setFontSize(6);
-                        pdf.text('QR Code', xPos + cardWidth - 23, yPos + cardHeight - 18);
-                        pdf.text('(Simulated)', xPos + cardWidth - 23, yPos + cardHeight - 12);
+                        try {
+                            const qr = qrcode(0, 'M');
+                            qr.addData(data.url);
+                            qr.make();
+                            
+                            // Get QR code as data URL
+                            const qrSize = 100; // Size for high resolution
+                            const qrCanvas = document.createElement('canvas');
+                            qrCanvas.width = qrSize;
+                            qrCanvas.height = qrSize;
+                            const qrCtx = qrCanvas.getContext('2d');
+                            
+                            // Create a white background
+                            qrCtx.fillStyle = '#FFFFFF';
+                            qrCtx.fillRect(0, 0, qrSize, qrSize);
+                            
+                            // Draw QR code
+                            const moduleCount = qr.getModuleCount();
+                            const tileSize = qrSize / moduleCount;
+                            
+                            qrCtx.fillStyle = '#000000';
+                            for (let r = 0; r < moduleCount; r++) {
+                                for (let c = 0; c < moduleCount; c++) {
+                                    if (qr.isDark(r, c)) {
+                                        qrCtx.fillRect(c * tileSize, r * tileSize, tileSize, tileSize);
+                                    }
+                                }
+                            }
+                            
+                            // Add QR code to PDF
+                            const qrDataURL = qrCanvas.toDataURL('image/png');
+                            pdf.addImage(qrDataURL, 'PNG', xPos + cardWidth - 25, yPos + cardHeight - 25, 20, 20);
+                        } catch (error) {
+                            console.error('Error generating QR code for PDF:', error);
+                            // Fallback: Draw a simple rectangle
+                            pdf.setDrawColor(200, 200, 200);
+                            pdf.rect(xPos + cardWidth - 25, yPos + cardHeight - 25, 20, 20);
+                            pdf.setFontSize(6);
+                            pdf.text('QR Code', xPos + cardWidth - 23, yPos + cardHeight - 18);
+                        }
                     }
                     
                     cellIndex++;
@@ -725,17 +721,29 @@
             }
             
             // Save the PDF
-            pdf.save('12-contact-cards-A4.pdf');
+            pdf.save('12-contact-cards-A4-landscape.pdf');
             status.textContent = 'PDF generated successfully! Check your downloads folder.';
         }
 
         function resetApp() {
-            clearAllData();
+            // Clear form inputs
+            document.getElementById('nameInput').value = '';
+            document.getElementById('mobileInput').value = '';
+            document.getElementById('emailInput').value = '';
+            document.getElementById('urlInput').value = '';
+            
+            // Clear all card data
+            for (let i = 0; i < 12; i++) {
+                cardData[i] = { name: '', mobile: '', email: '', url: '', qrCode: '' };
+                updateCardPreview(i);
+            }
+            
+            status.textContent = 'All data cleared. Fill in the contact information and click "Apply to All 12 Cards" to get started!';
         }
 
         // Initialize the grid on page load
         createCardsGrid();
-        status.textContent = 'Fill in the contact information to get started!';
+        status.textContent = 'Fill in the contact information and click "Apply to All 12 Cards" to get started!';
     </script>
 </body>
 </html>
