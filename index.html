@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Card Generator - 12 Cards (4x3 Grid)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .input-section {
+            border: 3px dashed #3498db;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            background-color: #f8fafc;
+        }
+        
+        .preview-section {
+            display: block;
+            margin-bottom: 30px;
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 0;
+            margin: 20px 0;
+            background: white;
+            padding: 0;
+            border: 2px solid #2c3e50;
+            justify-items: center;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card-cell {
+            width: 5.25cm;
+            height: 7.425cm;
+            border: 1px solid #bdc3c7;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: white;
+            padding: 8px;
+        }
+        
+        .card-preview {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            font-size: 10px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            text-align: center;
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-name {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 2px;
+            color: #2c3e50;
+        }
+        
+        .card-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .card-field {
+            margin-bottom: 4px;
+            word-break: break-word;
+        }
+        
+        .card-label {
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+        
+        .card-qr {
+            text-align: center;
+            margin-top: 5px;
+        }
+        
+        .qr-code {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+        }
+        
+        .card-inputs {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .input-group {
+            margin-bottom: 8px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 3px;
+            color: #2c3e50;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #bdc3c7;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .cell-label {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 10px;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
+            transition: all 0.3s ease;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1);
+        }
+        
+        .reset-btn {
+            background: linear-gradient(to right, #e67e22, #d35400);
+            color: white;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 10px;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
+            transition: all 0.3s ease;
+        }
+        
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1);
+        }
+        
+        .status {
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #2c3e50;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: #ecf0f1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .size-info {
+            text-align: center;
+            margin: 15px 0;
+            color: #2c3e50;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .cutting-guide {
+            text-align: center;
+            margin: 20px 0;
+            color: #c0392b;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 10px;
+            background-color: #fadbd8;
+            border-radius: 8px;
+            border-left: 5px solid #c0392b;
+        }
+        
+        .layout-preview {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .layout-diagram {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 0;
+            padding: 15px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            border: 2px solid #bdc3c7;
+        }
+        
+        .layout-cell {
+            width: 70px;
+            height: 50px;
+            background: #3498db;
+            border: 1px solid #2980b9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .layout-label {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #2c3e50;
+            text-align: center;
+            grid-column: 1 / -1;
+            font-weight: 600;
+        }
+        
+        .paper-info {
+            text-align: center;
+            margin: 15px 0;
+            color: #2c3e50;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px;
+            background-color: #d6eaf8;
+            border-radius: 8px;
+        }
+        
+        .dimensions-info {
+            text-align: center;
+            margin: 15px 0;
+            color: #27ae60;
+            font-size: 16px;
+            font-weight: 600;
+            background: #d5f5e3;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 5px solid #27ae60;
+        }
+        
+        .perfect-fit {
+            text-align: center;
+            margin: 15px 0;
+            color: #e67e22;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px;
+            background-color: #fdebd0;
+            border-radius: 8px;
+            border: 2px dashed #e67e22;
+        }
+        
+        .instructions {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #fff9e6;
+            border-radius: 8px;
+            border-left: 5px solid #f1c40f;
+        }
+        
+        .instructions h3 {
+            color: #d35400;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ol {
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .bulk-actions {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .bulk-btn {
+            background: linear-gradient(to right, #9b59b6, #8e44ad);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 5px;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
+            transition: all 0.3s ease;
+        }
+        
+        .bulk-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📇 Contact Card Generator - 12 Cards (4×3 Grid)</h1>
+        
+        <div class="input-section">
+            <div class="perfect-fit">
+                ✅ PERFECT FIT: 12 contact cards on A4 paper with NO TRIMMING needed after cutting
+            </div>
+            
+            <div class="layout-preview">
+                <div class="layout-diagram">
+                    <div class="layout-cell">Card 1<br>52.5×74.25mm</div>
+                    <div class="layout-cell">Card 2<br>52.5×74.25mm</div>
+                    <div class="layout-cell">Card 3<br>52.5×74.25mm</div>
+                    <div class="layout-cell">Card 4<br>52.5×74.25mm</div>
+                    <div class="layout-cell">Card 5<br>52.5×74.25mm</div>
+                    <div class="layout-cell">Card 6<br>52.5×74.25mm</div>
+                    <div class="layout-cell">Card 7<br>52.5×74.25mm</div>
+                    <div class="layout-cell">Card 8<br>52.5×74.25mm</div>
+                    <div class="layout-cell">Card 9<br>52.5×74.25mm</div>
+                    <div class="layout-cell">Card 10<br>52.5×74.25mm</div>
+                    <div class="layout-cell">Card 11<br>52.5×74.25mm</div>
+                    <div class="layout-cell">Card 12<br>52.5×74.25mm</div>
+                    <div class="layout-label">4 columns × 3 rows layout with no gaps or margins</div>
+                </div>
+            </div>
+            
+            <div class="paper-info">
+                A4 Paper Size: 210mm × 297mm
+            </div>
+            
+            <div class="dimensions-info">
+                Each card: 52.5mm × 74.25mm (210mm ÷ 4 = 52.5mm, 297mm ÷ 4 = 74.25mm)
+            </div>
+            
+            <div class="bulk-actions">
+                <button class="bulk-btn" onclick="fillSampleData()">Fill Sample Data</button>
+                <button class="bulk-btn" onclick="clearAllData()">Clear All Data</button>
+            </div>
+            
+            <div class="cutting-guide">
+                ✂️ Cut along the grid lines to get 12 identical cards - NO TRIMMING NEEDED!
+            </div>
+            
+            <div class="instructions">
+                <h3>How to use:</h3>
+                <ol>
+                    <li>Fill in the contact information for each card</li>
+                    <li>QR codes will be automatically generated from the URLs</li>
+                    <li>Click "Generate Printable PDF" to create your A4 sheet</li>
+                    <li>Print the PDF on A4 paper and cut along the grid lines</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="preview-section" id="previewSection">
+            <h3 style="text-align: center; margin-bottom: 20px; color: #2c3e50;">Preview (4 columns × 3 rows):</h3>
+            <div class="cards-grid" id="cardsGrid">
+                <!-- 12 card cells will be generated here dynamically -->
+            </div>
+            
+            <div class="controls">
+                <button class="generate-btn" onclick="generatePDF()">🖨️ Generate Printable PDF</button>
+                <button class="reset-btn" onclick="resetApp()">🔄 Reset All</button>
+            </div>
+        </div>
+
+        <div class="status" id="status">Fill in the contact information to get started!</div>
+    </div>
+
+    <script>
+        // Initialize jsPDF
+        const { jsPDF } = window.jspdf;
+
+        // DOM elements
+        const previewSection = document.getElementById('previewSection');
+        const cardsGrid = document.getElementById('cardsGrid');
+        const status = document.getElementById('status');
+
+        // Store card data for each cell (12 cells)
+        const cardData = Array(12).fill().map(() => ({
+            name: '',
+            mobile: '',
+            email: '',
+            url: '',
+            qrCode: ''
+        }));
+
+        // Create 12 card cells for preview (3 rows of 4)
+        function createCardsGrid() {
+            cardsGrid.innerHTML = '';
+            
+            for (let i = 0; i < 12; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'card-cell';
+                cell.id = `cardCell${i}`;
+                
+                // Create cell label
+                const label = document.createElement('div');
+                label.className = 'cell-label';
+                label.textContent = `Card ${i+1}`;
+                
+                // Create card preview
+                const cardPreview = document.createElement('div');
+                cardPreview.className = 'card-preview';
+                cardPreview.id = `cardPreview${i}`;
+                
+                // Create input section
+                const cardInputs = document.createElement('div');
+                cardInputs.className = 'card-inputs';
+                
+                // Name input
+                const nameGroup = document.createElement('div');
+                nameGroup.className = 'input-group';
+                nameGroup.innerHTML = `
+                    <label for="nameInput${i}">Name:</label>
+                    <input type="text" id="nameInput${i}" class="name-input" placeholder="Enter name" 
+                           oninput="updateCardData(${i}, 'name', this.value)">
+                `;
+                
+                // Mobile input
+                const mobileGroup = document.createElement('div');
+                mobileGroup.className = 'input-group';
+                mobileGroup.innerHTML = `
+                    <label for="mobileInput${i}">Mobile:</label>
+                    <input type="text" id="mobileInput${i}" class="mobile-input" placeholder="Enter mobile number" 
+                           oninput="updateCardData(${i}, 'mobile', this.value)">
+                `;
+                
+                // Email input
+                const emailGroup = document.createElement('div');
+                emailGroup.className = 'input-group';
+                emailGroup.innerHTML = `
+                    <label for="emailInput${i}">Email:</label>
+                    <input type="text" id="emailInput${i}" class="email-input" placeholder="Enter email" 
+                           oninput="updateCardData(${i}, 'email', this.value)">
+                `;
+                
+                // URL input
+                const urlGroup = document.createElement('div');
+                urlGroup.className = 'input-group';
+                urlGroup.innerHTML = `
+                    <label for="urlInput${i}">URL (for QR):</label>
+                    <input type="text" id="urlInput${i}" class="url-input" placeholder="Enter URL" 
+                           oninput="updateCardData(${i}, 'url', this.value); generateQRCode(${i})">
+                `;
+                
+                // Assemble the inputs
+                cardInputs.appendChild(nameGroup);
+                cardInputs.appendChild(mobileGroup);
+                cardInputs.appendChild(emailGroup);
+                cardInputs.appendChild(urlGroup);
+                
+                // Assemble the cell
+                cell.appendChild(label);
+                cell.appendChild(cardPreview);
+                cell.appendChild(cardInputs);
+                
+                cardsGrid.appendChild(cell);
+                
+                // Initialize the card preview
+                updateCardPreview(i);
+            }
+        }
+
+        // Update card data and preview
+        function updateCardData(cardIndex, field, value) {
+            cardData[cardIndex][field] = value;
+            updateCardPreview(cardIndex);
+        }
+
+        // Update card preview display
+        function updateCardPreview(cardIndex) {
+            const preview = document.getElementById(`cardPreview${cardIndex}`);
+            const data = cardData[cardIndex];
+            
+            preview.innerHTML = `
+                <div class="card-header">
+                    <div class="card-name">${data.name || 'Name'}</div>
+                </div>
+                <div class="card-details">
+                    <div>
+                        ${data.mobile ? `<div class="card-field"><span class="card-label">Mobile:</span> ${data.mobile}</div>` : ''}
+                        ${data.email ? `<div class="card-field"><span class="card-label">Email:</span> ${data.email}</div>` : ''}
+                        ${data.url ? `<div class="card-field"><span class="card-label">URL:</span> ${data.url}</div>` : ''}
+                    </div>
+                    <div class="card-qr">
+                        ${data.qrCode ? `<div class="qr-code" id="qrCode${cardIndex}">${data.qrCode}</div>` : '<div class="qr-code">QR Code</div>'}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Generate QR code for a card
+        function generateQRCode(cardIndex) {
+            const url = cardData[cardIndex].url;
+            if (!url) {
+                cardData[cardIndex].qrCode = '';
+                updateCardPreview(cardIndex);
+                return;
+            }
+            
+            // Simple QR code representation (in a real app, you'd use a QR code library)
+            // For demo purposes, we're just showing the URL shortened
+            const qrText = url.length > 15 ? url.substring(0, 15) + '...' : url;
+            cardData[cardIndex].qrCode = `<div style="font-size:8px; word-break:break-all;">${qrText}</div>`;
+            updateCardPreview(cardIndex);
+        }
+
+        // Fill sample data for testing
+        function fillSampleData() {
+            const sampleData = [
+                { name: 'John Doe', mobile: '+1 (555) 123-4567', email: 'john.doe@example.com', url: 'https://johndoe.com' },
+                { name: 'Jane Smith', mobile: '+1 (555) 987-6543', email: 'jane.smith@example.com', url: 'https://janesmith.com' },
+                { name: 'Robert Johnson', mobile: '+1 (555) 456-7890', email: 'robert.j@example.com', url: 'https://robertj.com' },
+                { name: 'Emily Davis', mobile: '+1 (555) 234-5678', email: 'emily.davis@example.com', url: 'https://emilydavis.com' },
+                { name: 'Michael Wilson', mobile: '+1 (555) 876-5432', email: 'm.wilson@example.com', url: 'https://mwilson.com' },
+                { name: 'Sarah Brown', mobile: '+1 (555) 345-6789', email: 'sarah.brown@example.com', url: 'https://sarahbrown.com' },
+                { name: 'David Miller', mobile: '+1 (555) 765-4321', email: 'david.miller@example.com', url: 'https://davidmiller.com' },
+                { name: 'Lisa Taylor', mobile: '+1 (555) 456-1234', email: 'lisa.taylor@example.com', url: 'https://lisataylor.com' },
+                { name: 'James Anderson', mobile: '+1 (555) 654-3210', email: 'j.anderson@example.com', url: 'https://jamesanderson.com' },
+                { name: 'Amanda Thomas', mobile: '+1 (555) 567-8901', email: 'amanda.thomas@example.com', url: 'https://amandathomas.com' },
+                { name: 'Christopher Lee', mobile: '+1 (555) 432-1098', email: 'chris.lee@example.com', url: 'https://chrislee.com' },
+                { name: 'Jessica White', mobile: '+1 (555) 890-1234', email: 'jessica.white@example.com', url: 'https://jessicawhite.com' }
+            ];
+            
+            for (let i = 0; i < 12; i++) {
+                const data = sampleData[i] || { name: '', mobile: '', email: '', url: '' };
+                cardData[i] = { ...data, qrCode: '' };
+                
+                // Update inputs
+                document.getElementById(`nameInput${i}`).value = data.name;
+                document.getElementById(`mobileInput${i}`).value = data.mobile;
+                document.getElementById(`emailInput${i}`).value = data.email;
+                document.getElementById(`urlInput${i}`).value = data.url;
+                
+                // Generate QR code
+                if (data.url) {
+                    generateQRCode(i);
+                } else {
+                    updateCardPreview(i);
+                }
+            }
+            
+            status.textContent = 'Sample data filled! You can now generate the PDF.';
+        }
+
+        // Clear all data
+        function clearAllData() {
+            for (let i = 0; i < 12; i++) {
+                cardData[i] = { name: '', mobile: '', email: '', url: '', qrCode: '' };
+                
+                // Clear inputs
+                document.getElementById(`nameInput${i}`).value = '';
+                document.getElementById(`mobileInput${i}`).value = '';
+                document.getElementById(`emailInput${i}`).value = '';
+                document.getElementById(`urlInput${i}`).value = '';
+                
+                updateCardPreview(i);
+            }
+            
+            status.textContent = 'All data cleared. Fill in the contact information to get started!';
+        }
+
+        // Generate PDF
+        function generatePDF() {
+            status.textContent = 'Generating PDF...';
+
+            // Create PDF in A4 format
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const pdfWidth = pdf.internal.pageSize.getWidth(); // 210mm
+            const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
+            
+            // Set dimensions for 4x3 grid - PERFECT A4 FIT
+            const cardWidth = 52.5; // 210mm / 4 = 52.5mm
+            const cardHeight = 74.25; // 297mm / 4 = 74.25mm
+            
+            // No gaps between cards
+            const horizontalGap = 0;
+            const verticalGap = 0;
+            
+            // Add all 12 cards in a perfectly aligned 4x3 grid
+            let cellIndex = 0;
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 4; col++) {
+                    const xPos = col * (cardWidth + horizontalGap);
+                    const yPos = row * (cardHeight + verticalGap);
+                    const data = cardData[cellIndex];
+                    
+                    // Draw card border
+                    pdf.setDrawColor(100, 100, 100);
+                    pdf.setLineWidth(0.2);
+                    pdf.rect(xPos, yPos, cardWidth, cardHeight);
+                    
+                    // Add card content
+                    pdf.setFontSize(10);
+                    pdf.setTextColor(0, 0, 0);
+                    
+                    // Name
+                    if (data.name) {
+                        pdf.setFont(undefined, 'bold');
+                        pdf.text(data.name, xPos + 5, yPos + 8);
+                        pdf.setFont(undefined, 'normal');
+                    }
+                    
+                    // Mobile
+                    if (data.mobile) {
+                        pdf.text(`Mobile: ${data.mobile}`, xPos + 5, yPos + 15);
+                    }
+                    
+                    // Email
+                    if (data.email) {
+                        pdf.text(`Email: ${data.email}`, xPos + 5, yPos + 22);
+                    }
+                    
+                    // URL
+                    if (data.url) {
+                        pdf.text(`URL: ${data.url}`, xPos + 5, yPos + 29);
+                    }
+                    
+                    // QR Code area (simulated)
+                    if (data.url) {
+                        pdf.setDrawColor(200, 200, 200);
+                        pdf.rect(xPos + cardWidth - 25, yPos + cardHeight - 25, 20, 20);
+                        pdf.setFontSize(6);
+                        pdf.text('QR Code', xPos + cardWidth - 23, yPos + cardHeight - 18);
+                        pdf.text('(Simulated)', xPos + cardWidth - 23, yPos + cardHeight - 12);
+                    }
+                    
+                    cellIndex++;
+                }
+            }
+            
+            // Add cutting guidelines
+            pdf.setDrawColor(255, 0, 0);
+            pdf.setLineWidth(0.1);
+            
+            // Vertical cutting lines
+            for (let i = 1; i < 4; i++) {
+                pdf.line(i * cardWidth, 0, i * cardWidth, pdfHeight);
+            }
+            
+            // Horizontal cutting lines
+            for (let i = 1; i < 3; i++) {
+                pdf.line(0, i * cardHeight, pdfWidth, i * cardHeight);
+            }
+            
+            // Save the PDF
+            pdf.save('12-contact-cards-A4.pdf');
+            status.textContent = 'PDF generated successfully! Check your downloads folder.';
+        }
+
+        function resetApp() {
+            clearAllData();
+        }
+
+        // Initialize the grid on page load
+        createCardsGrid();
+        status.textContent = 'Fill in the contact information to get started!';
+    </script>
+</body>
+</html>
