@@ -122,8 +122,8 @@
         }
         
         .card-cell {
-            width: 5.25cm;
-            height: 7.425cm;
+            width: 7.425cm; /* 74.25mm */
+            height: 7cm; /* 70mm */
             border: 1px solid #bdc3c7;
             overflow: hidden;
             display: flex;
@@ -385,23 +385,23 @@
         
         <div class="input-section">
             <div class="perfect-fit">
-                ✅ PERFECT FIT: 12 contact cards on A4 paper with NO TRIMMING needed after cutting
+                ✅ PERFECT FIT: 12 contact cards on A4 landscape paper with NO TRIMMING needed after cutting
             </div>
             
             <div class="layout-preview">
                 <div class="layout-diagram">
-                    <div class="layout-cell">Card 1<br>74.25×52.5mm</div>
-                    <div class="layout-cell">Card 2<br>74.25×52.5mm</div>
-                    <div class="layout-cell">Card 3<br>74.25×52.5mm</div>
-                    <div class="layout-cell">Card 4<br>74.25×52.5mm</div>
-                    <div class="layout-cell">Card 5<br>74.25×52.5mm</div>
-                    <div class="layout-cell">Card 6<br>74.25×52.5mm</div>
-                    <div class="layout-cell">Card 7<br>74.25×52.5mm</div>
-                    <div class="layout-cell">Card 8<br>74.25×52.5mm</div>
-                    <div class="layout-cell">Card 9<br>74.25×52.5mm</div>
-                    <div class="layout-cell">Card 10<br>74.25×52.5mm</div>
-                    <div class="layout-cell">Card 11<br>74.25×52.5mm</div>
-                    <div class="layout-cell">Card 12<br>74.25×52.5mm</div>
+                    <div class="layout-cell">Card 1<br>74.25×70mm</div>
+                    <div class="layout-cell">Card 2<br>74.25×70mm</div>
+                    <div class="layout-cell">Card 3<br>74.25×70mm</div>
+                    <div class="layout-cell">Card 4<br>74.25×70mm</div>
+                    <div class="layout-cell">Card 5<br>74.25×70mm</div>
+                    <div class="layout-cell">Card 6<br>74.25×70mm</div>
+                    <div class="layout-cell">Card 7<br>74.25×70mm</div>
+                    <div class="layout-cell">Card 8<br>74.25×70mm</div>
+                    <div class="layout-cell">Card 9<br>74.25×70mm</div>
+                    <div class="layout-cell">Card 10<br>74.25×70mm</div>
+                    <div class="layout-cell">Card 11<br>74.25×70mm</div>
+                    <div class="layout-cell">Card 12<br>74.25×70mm</div>
                     <div class="layout-label">4 columns × 3 rows layout with no gaps or margins (Landscape)</div>
                 </div>
             </div>
@@ -411,7 +411,7 @@
             </div>
             
             <div class="dimensions-info">
-                Each card: 74.25mm × 52.5mm (297mm ÷ 4 = 74.25mm, 210mm ÷ 4 = 52.5mm)
+                Each card: 74.25mm × 70mm (297mm ÷ 4 = 74.25mm, 210mm ÷ 3 = 70mm)
             </div>
             
             <div class="single-input-form">
@@ -451,7 +451,7 @@
                     <li>Click "Apply to All 12 Cards" to update all cards</li>
                     <li>QR codes will be automatically generated from the URL</li>
                     <li>Click "Generate Printable PDF" to create your A4 sheet</li>
-                    <li>Print the PDF on A4 paper and cut along the grid lines</li>
+                    <li>Print the PDF on A4 paper (landscape) and cut along the grid lines</li>
                 </ol>
             </div>
         </div>
@@ -613,7 +613,7 @@
             
             // Set dimensions for 4x3 grid - PERFECT A4 LANDSCAPE FIT
             const cardWidth = 74.25; // 297mm / 4 = 74.25mm
-            const cardHeight = 52.5; // 210mm / 4 = 52.5mm
+            const cardHeight = 70; // 210mm / 3 = 70mm
             
             // No gaps between cards
             const horizontalGap = 0;
