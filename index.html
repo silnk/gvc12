@@ -81,6 +81,27 @@
             box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
         }
         
+        .logo-upload {
+            border: 2px dashed #bdc3c7;
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .logo-preview {
+            max-width: 100px;
+            max-height: 50px;
+            margin: 10px auto;
+            display: none;
+        }
+        
+        .logo-preview img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
         .apply-btn {
             background: linear-gradient(to right, #3498db, #2980b9);
             color: white;
@@ -143,10 +164,31 @@
         }
         
         .card-header {
-            text-align: center;
+            display: flex;
+            align-items: center;
             margin-bottom: 5px;
             padding-bottom: 5px;
             border-bottom: 1px solid #eee;
+        }
+        
+        .card-logo {
+            width: 30px;
+            height: 30px;
+            margin-right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+        }
+        
+        .card-logo img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .card-title {
+            flex: 1;
         }
         
         .card-name {
@@ -154,6 +196,17 @@
             font-size: 12px;
             margin-bottom: 2px;
             color: #2c3e50;
+        }
+        
+        .card-company {
+            font-size: 9px;
+            color: #7f8c8d;
+        }
+        
+        .card-designation {
+            font-size: 9px;
+            color: #7f8c8d;
+            font-style: italic;
         }
         
         .card-details {
@@ -431,6 +484,16 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="companyInput">Company Name:</label>
+                    <input type="text" id="companyInput" placeholder="Enter company name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="designationInput">Designation:</label>
+                    <input type="text" id="designationInput" placeholder="Enter designation">
+                </div>
+                
+                <div class="form-group">
                     <label for="mobileInput">Mobile:</label>
                     <input type="text" id="mobileInput" placeholder="Enter mobile number">
                 </div>
@@ -445,6 +508,20 @@
                     <input type="text" id="urlInput" placeholder="Enter URL">
                 </div>
                 
+                <div class="form-group">
+                    <label>Company Logo:</label>
+                    <div class="logo-upload">
+                        <input type="file" id="logoInput" accept="image/*" style="display: none;">
+                        <button type="button" onclick="document.getElementById('logoInput').click()" class="apply-btn" style="background: #9b59b6; margin-bottom: 10px;">
+                            Upload Company Logo
+                        </button>
+                        <div class="logo-preview" id="logoPreview">
+                            <img id="logoPreviewImg" src="" alt="Logo Preview">
+                        </div>
+                        <p style="font-size: 12px; color: #7f8c8d;">Recommended: Square logo, max 100×100px</p>
+                    </div>
+                </div>
+                
                 <button class="apply-btn" onclick="applyToAllCards()">Apply to All 12 Cards</button>
             </div>
             
@@ -456,6 +533,7 @@
                 <h3>How to use:</h3>
                 <ol>
                     <li>Fill in the contact information once in the form above</li>
+                    <li>Upload your company logo (optional)</li>
                     <li>Click "Apply to All 12 Cards" to update all cards</li>
                     <li>QR codes will be automatically generated from the URL</li>
                     <li>Click "Generate Printable PDF" to create your A4 sheet</li>
@@ -487,15 +565,41 @@
         const previewSection = document.getElementById('previewSection');
         const cardsGrid = document.getElementById('cardsGrid');
         const status = document.getElementById('status');
+        const logoInput = document.getElementById('logoInput');
+        const logoPreview = document.getElementById('logoPreview');
+        const logoPreviewImg = document.getElementById('logoPreviewImg');
 
         // Store card data for all 12 cards
         const cardData = Array(12).fill().map(() => ({
             name: '',
+            company: '',
+            designation: '',
             mobile: '',
             email: '',
             url: '',
-            qrCode: ''
+            qrCode: '',
+            logo: ''
         }));
+
+        // Store the company logo
+        let companyLogo = '';
+
+        // Handle logo upload
+        logoInput.addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    companyLogo = e.target.result;
+                    logoPreviewImg.src = companyLogo;
+                    logoPreview.style.display = 'block';
+                    status.textContent = 'Logo uploaded successfully! Click "Apply to All 12 Cards" to update preview.';
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        });
 
         // Create 12 card cells for preview (4 rows of 3)
         function createCardsGrid() {
@@ -534,7 +638,14 @@
             
             preview.innerHTML = `
                 <div class="card-header">
-                    <div class="card-name">${data.name || 'Name'}</div>
+                    <div class="card-logo" id="cardLogo${cardIndex}">
+                        ${data.logo ? `<img src="${data.logo}" alt="Logo">` : 'Logo'}
+                    </div>
+                    <div class="card-title">
+                        <div class="card-name">${data.name || 'Name'}</div>
+                        <div class="card-company">${data.company || 'Company'}</div>
+                        <div class="card-designation">${data.designation || 'Designation'}</div>
+                    </div>
                 </div>
                 <div class="card-details">
                     <div class="card-text">
@@ -577,6 +688,8 @@
         // Apply the same data to all cards
         function applyToAllCards() {
             const name = document.getElementById('nameInput').value;
+            const company = document.getElementById('companyInput').value;
+            const designation = document.getElementById('designationInput').value;
             const mobile = document.getElementById('mobileInput').value;
             const email = document.getElementById('emailInput').value;
             const url = document.getElementById('urlInput').value;
@@ -584,9 +697,12 @@
             // Update all cards with the same data
             for (let i = 0; i < 12; i++) {
                 cardData[i].name = name;
+                cardData[i].company = company;
+                cardData[i].designation = designation;
                 cardData[i].mobile = mobile;
                 cardData[i].email = email;
                 cardData[i].url = url;
+                cardData[i].logo = companyLogo;
                 
                 updateCardPreview(i);
                 generateQRCode(i);
@@ -599,7 +715,7 @@
         function generatePDF() {
             // Check if at least one field is filled
             const hasData = cardData.some(card => 
-                card.name || card.mobile || card.email || card.url
+                card.name || card.mobile || card.email || card.url || card.company
             );
             
             if (!hasData) {
@@ -644,29 +760,48 @@
                     pdf.setFontSize(8);
                     pdf.setTextColor(0, 0, 0);
                     
+                    // Add logo if available
+                    if (data.logo) {
+                        try {
+                            pdf.addImage(data.logo, 'PNG', xPos + 5, yPos + 5, 10, 10);
+                        } catch (error) {
+                            console.error('Error adding logo to PDF:', error);
+                        }
+                    }
+                    
                     // Name
                     if (data.name) {
                         pdf.setFont(undefined, 'bold');
-                        pdf.text(data.name, xPos + 5, yPos + 8, { maxWidth: cardWidth - 60 });
+                        pdf.text(data.name, xPos + (data.logo ? 18 : 5), yPos + 8, { maxWidth: cardWidth - 60 });
                         pdf.setFont(undefined, 'normal');
+                    }
+                    
+                    // Company
+                    if (data.company) {
+                        pdf.text(data.company, xPos + (data.logo ? 18 : 5), yPos + 13, { maxWidth: cardWidth - 60 });
+                    }
+                    
+                    // Designation
+                    if (data.designation) {
+                        pdf.text(data.designation, xPos + (data.logo ? 18 : 5), yPos + 18, { maxWidth: cardWidth - 60 });
                     }
                     
                     // Mobile
                     if (data.mobile) {
-                        pdf.text(`Mobile: ${data.mobile}`, xPos + 5, yPos + 15, { maxWidth: cardWidth - 60 });
+                        pdf.text(`Mobile: ${data.mobile}`, xPos + 5, yPos + 25, { maxWidth: cardWidth - 60 });
                     }
                     
                     // Email
                     if (data.email) {
-                        pdf.text(`Email: ${data.email}`, xPos + 5, yPos + 22, { maxWidth: cardWidth - 60 });
+                        pdf.text(`Email: ${data.email}`, xPos + 5, yPos + 30, { maxWidth: cardWidth - 60 });
                     }
                     
                     // URL
                     if (data.url) {
-                        pdf.text(`URL: ${data.url}`, xPos + 5, yPos + 29, { maxWidth: cardWidth - 60 });
+                        pdf.text(`URL: ${data.url}`, xPos + 5, yPos + 35, { maxWidth: cardWidth - 60 });
                     }
                     
-                    // Generate QR code for PDF
+                    // Generate QR code for PDF (smaller size)
                     if (data.url) {
                         try {
                             const qr = qrcode(0, 'M');
@@ -674,7 +809,7 @@
                             qr.make();
                             
                             // Get QR code as data URL
-                            const qrSize = 100; // Size for high resolution
+                            const qrSize = 50; // Smaller size for less ink
                             const qrCanvas = document.createElement('canvas');
                             qrCanvas.width = qrSize;
                             qrCanvas.height = qrSize;
@@ -697,16 +832,16 @@
                                 }
                             }
                             
-                            // Add QR code to PDF
+                            // Add QR code to PDF (smaller size)
                             const qrDataURL = qrCanvas.toDataURL('image/png');
-                            pdf.addImage(qrDataURL, 'PNG', xPos + cardWidth - 45, yPos + 5, 40, 40);
+                            pdf.addImage(qrDataURL, 'PNG', xPos + cardWidth - 35, yPos + 10, 25, 25);
                         } catch (error) {
                             console.error('Error generating QR code for PDF:', error);
                             // Fallback: Draw a simple rectangle
                             pdf.setDrawColor(200, 200, 200);
-                            pdf.rect(xPos + cardWidth - 45, yPos + 5, 40, 40);
+                            pdf.rect(xPos + cardWidth - 35, yPos + 10, 25, 25);
                             pdf.setFontSize(6);
-                            pdf.text('QR Code', xPos + cardWidth - 40, yPos + 25);
+                            pdf.text('QR Code', xPos + cardWidth - 30, yPos + 25);
                         }
                     }
                     
@@ -736,13 +871,29 @@
         function resetApp() {
             // Clear form inputs
             document.getElementById('nameInput').value = '';
+            document.getElementById('companyInput').value = '';
+            document.getElementById('designationInput').value = '';
             document.getElementById('mobileInput').value = '';
             document.getElementById('emailInput').value = '';
             document.getElementById('urlInput').value = '';
+            document.getElementById('logoInput').value = '';
+            
+            // Clear logo preview
+            logoPreview.style.display = 'none';
+            companyLogo = '';
             
             // Clear all card data
             for (let i = 0; i < 12; i++) {
-                cardData[i] = { name: '', mobile: '', email: '', url: '', qrCode: '' };
+                cardData[i] = { 
+                    name: '', 
+                    company: '', 
+                    designation: '', 
+                    mobile: '', 
+                    email: '', 
+                    url: '', 
+                    qrCode: '',
+                    logo: ''
+                };
                 updateCardPreview(i);
             }
             
