@@ -312,8 +312,8 @@
         }
         
         .card-qr {
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -745,7 +745,7 @@
             status.textContent = 'Contact information applied to all 12 cards! You can now generate the PDF.';
         }
 
-        // Generate PDF (Landscape orientation) - FIXED TO MATCH PREVIEW
+        // Generate PDF (Landscape orientation) - FIXED QR CODE SIZE
         function generatePDF() {
             // Check if at least one field is filled
             const hasData = cardData.some(card => 
@@ -772,6 +772,10 @@
             // Set dimensions for 3x4 grid - PERFECT A4 LANDSCAPE FIT
             const cardWidth = 99; // 297mm / 3 = 99mm
             const cardHeight = 52.5; // 210mm / 4 = 52.5mm
+            
+            // Logo and QR code dimensions (matching preview)
+            const logoSize = 10; // 10mm x 10mm (matches 40px at 300dpi)
+            const qrSize = 10; // 10mm x 10mm (same as logo)
             
             // No gaps between cards
             const horizontalGap = 0;
@@ -805,13 +809,13 @@
                     // Add logo if available
                     if (data.logo) {
                         try {
-                            pdf.addImage(data.logo, 'PNG', xPos + 5, currentY, 10, 10);
+                            pdf.addImage(data.logo, 'PNG', xPos + 5, currentY, logoSize, logoSize);
                         } catch (error) {
                             console.error('Error adding logo to PDF:', error);
                         }
                     }
                     
-                    // Add QR code if enabled and URL exists
+                    // Add QR code if enabled and URL exists - SAME SIZE AS LOGO
                     if (showQR && data.url) {
                         try {
                             const qr = qrcode(0, 'H'); // High error correction
@@ -819,19 +823,19 @@
                             qr.make();
                             
                             // Get QR code as data URL with higher resolution
-                            const qrSize = 50; // Higher resolution for better quality
+                            const qrCanvasSize = 50; // Higher resolution for better quality
                             const qrCanvas = document.createElement('canvas');
-                            qrCanvas.width = qrSize;
-                            qrCanvas.height = qrSize;
+                            qrCanvas.width = qrCanvasSize;
+                            qrCanvas.height = qrCanvasSize;
                             const qrCtx = qrCanvas.getContext('2d');
                             
                             // Create a white background
                             qrCtx.fillStyle = '#FFFFFF';
-                            qrCtx.fillRect(0, 0, qrSize, qrSize);
+                            qrCtx.fillRect(0, 0, qrCanvasSize, qrCanvasSize);
                             
                             // Draw QR code with better quality
                             const moduleCount = qr.getModuleCount();
-                            const tileSize = qrSize / moduleCount;
+                            const tileSize = qrCanvasSize / moduleCount;
                             
                             qrCtx.fillStyle = '#000000';
                             for (let r = 0; r < moduleCount; r++) {
@@ -842,9 +846,9 @@
                                 }
                             }
                             
-                            // Add QR code to PDF (top right corner)
+                            // Add QR code to PDF - SAME SIZE AS LOGO (10mm x 10mm)
                             const qrDataURL = qrCanvas.toDataURL('image/png');
-                            pdf.addImage(qrDataURL, 'PNG', xPos + cardWidth - 25, currentY, 15, 15);
+                            pdf.addImage(qrDataURL, 'PNG', xPos + cardWidth - 15, currentY, qrSize, qrSize);
                         } catch (error) {
                             console.error('Error generating QR code for PDF:', error);
                         }
@@ -1001,7 +1005,7 @@
         });
         
         showAddressCheckbox.addEventListener('change', function() {
-            for (let i = 0; i < 12; i++) {
+            for ( let i = 0; i < 12; i++) {
                 updateCardPreview(i);
             }
         });
