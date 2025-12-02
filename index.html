@@ -745,7 +745,7 @@
             status.textContent = 'Contact information applied to all 12 cards! You can now generate the PDF.';
         }
 
-        // Generate PDF (Landscape orientation)
+        // Generate PDF (Landscape orientation) - FIXED TO MATCH PREVIEW
         function generatePDF() {
             // Check if at least one field is filled
             const hasData = cardData.some(card => 
@@ -796,7 +796,7 @@
                     pdf.setLineWidth(0.1);
                     pdf.rect(xPos, yPos, cardWidth, cardHeight);
                     
-                    // Add card content
+                    // Add card content - MATCHING PREVIEW LAYOUT
                     pdf.setFontSize(9);
                     pdf.setTextColor(0, 0, 0);
                     
@@ -877,28 +877,43 @@
                     
                     currentY += 2; // Add some space before contact details
                     
+                    // CONTACT DETAILS SECTION - CENTERED AND CLEAN (MATCHING PREVIEW)
+                    const centerX = xPos + cardWidth / 2;
+                    
                     // Address
                     if (showAddress && data.address) {
-                        const addressLines = pdf.splitTextToSize(data.address, cardWidth - 15);
-                        pdf.text(addressLines, xPos + 5, currentY);
-                        currentY += (addressLines.length * 4) + 2;
+                        pdf.setFontSize(8);
+                        const addressLines = pdf.splitTextToSize(data.address, cardWidth - 20);
+                        // Center the address
+                        addressLines.forEach(line => {
+                            const textWidth = pdf.getTextWidth(line);
+                            pdf.text(line, centerX - textWidth / 2, currentY);
+                            currentY += 3.5;
+                        });
+                        currentY += 1;
                     }
                     
-                    // Mobile
+                    // Mobile - CLEAN (no label)
                     if (data.mobile) {
-                        pdf.text(data.mobile, xPos + 5, currentY, { maxWidth: cardWidth - 15 });
+                        pdf.setFontSize(9);
+                        const textWidth = pdf.getTextWidth(data.mobile);
+                        pdf.text(data.mobile, centerX - textWidth / 2, currentY);
                         currentY += 4;
                     }
                     
-                    // Email
+                    // Email - CLEAN (no label)
                     if (data.email) {
-                        pdf.text(data.email, xPos + 5, currentY, { maxWidth: cardWidth - 15 });
+                        pdf.setFontSize(9);
+                        const textWidth = pdf.getTextWidth(data.email);
+                        pdf.text(data.email, centerX - textWidth / 2, currentY);
                         currentY += 4;
                     }
                     
-                    // URL
+                    // URL - CLEAN (no label)
                     if (data.url) {
-                        pdf.text(data.url, xPos + 5, currentY, { maxWidth: cardWidth - 15 });
+                        pdf.setFontSize(9);
+                        const textWidth = pdf.getTextWidth(data.url);
+                        pdf.text(data.url, centerX - textWidth / 2, currentY);
                     }
                     
                     cellIndex++;
